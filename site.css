@@ -1,0 +1,956 @@
+:root{
+  --black:#040100;     /* where the safelight doesn't reach */
+  --safe:#e8301a;      /* the bulb */
+  --paper:#e2a08a;     /* photo paper under red light */
+  --paper-lo:#b97461;  /* paper in shadow */
+  --ink:#2b0904;       /* type and grease pencil on paper */
+  --text:#d98a72;      /* typed text on the dark */
+  --dim:#6e2416;       /* faint labels on the dark */
+  --cream:#f5e6d3;--cream-line:rgba(255,240,224,.2);--gold:#c9a35a;--gold-hi:#ead29a;--gold-lo:#7d6230;--gold-line:rgba(201,163,90,.28);
+  --f-box:"Libre Franklin","Franklin Gothic Medium","Arial Narrow",Arial,sans-serif;
+  --f-type:"Special Elite","American Typewriter","Courier New",monospace;
+  --f-script:"Yellowtail","Brush Script MT","Segoe Script",cursive;
+  --f-poster:"League Gothic","Oswald","Arial Narrow",Impact,sans-serif;   /* Alternate Gothic, the poster and catalog headline face of the 40s and 50s */
+  --f-body:"Courier Prime","Courier New",monospace;                        /* a clean office typewriter for reading */
+  --age:radial-gradient(ellipse 40% 30% at 85% 12%,rgba(90,30,10,.16),transparent 70%),radial-gradient(ellipse 30% 25% at 10% 90%,rgba(90,30,10,.14),transparent 70%),radial-gradient(rgba(43,9,4,.13) 1px,transparent 1.4px);
+  --age-size:auto,auto,4px 4px;
+  /* one spacing system for the whole site */
+  --sec:clamp(44px,5.6vw,72px);          /* space above and below every section */
+  --sec-first:clamp(26px,3.6vw,48px);    /* the first section sits closer to the header */
+  --head-gap:clamp(26px,3.2vw,40px);     /* section heading to its content */
+  --stack:clamp(16px,1.8vw,22px);        /* heading to paragraph, paragraph to list */
+  --chain:30px;                          /* room for a hanging sign's chains */
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--black);scroll-behavior:smooth;overflow-x:clip}
+body{margin:0;overflow-x:clip;color:var(--text);font:400 16.5px/1.65 var(--f-body);letter-spacing:.01em;
+  background:
+    radial-gradient(85vw 85vh at 50% 0%,rgba(232,48,26,.42),rgba(232,48,26,.13) 45%,rgba(0,0,0,.4) 82%) fixed,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Crect width='72' height='72' fill='%23060100'/%3E%3Crect x='1.5' y='1.5' width='69' height='69' rx='2.5' fill='%23130403'/%3E%3Crect x='1.5' y='1.5' width='69' height='69' rx='2.5' fill='none' stroke='%231e0705' stroke-width='1'/%3E%3Cpath d='M4 4.5h64' stroke='%23fff' stroke-opacity='.035' stroke-width='1.2'/%3E%3Cpath d='M4.5 4v63' stroke='%23fff' stroke-opacity='.02'/%3E%3Cpath d='M68 70h-63' stroke='%23000' stroke-opacity='.35'/%3E%3C/svg%3E"),
+    var(--black)}
+::selection{background:rgba(201,163,90,.35);color:#fff4e0}
+a{color:inherit}
+:focus-visible{outline:2px dashed var(--paper);outline-offset:4px}
+p{margin:0}
+p,dd,small,.out,.lede{text-shadow:0 0 .6px currentColor}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(16px,4vw,44px);position:relative;z-index:2}
+
+/* ---------- shared pieces ---------- */
+.tape{display:inline-block;background:linear-gradient(180deg,rgba(255,250,240,.16),rgba(255,250,240,0) 40%,rgba(0,0,0,.06)),var(--paper);color:var(--ink);
+  font:700 13px/1 var(--f-box);text-transform:uppercase;letter-spacing:.12em;padding:8px 14px 7px;transform:rotate(var(--r,-1.5deg));text-decoration:none;
+  clip-path:polygon(0 10%,4% 0,30% 6%,62% 0,96% 5%,100% 0,98% 50%,100% 96%,70% 100%,40% 94%,4% 100%,0 90%,2% 50%)}
+.tape.kick{font-size:13px;font-weight:900;--r:-2deg;padding:7px 14px 6px;margin-bottom:14px}
+/* a hanging enamel department sign, the kind that hung over each counter of a camera shop */
+.dept{position:relative;display:inline-block;margin:0 0 18px;padding:10px 18px 9px;font:800 12px/1 var(--f-box);letter-spacing:.26em;text-transform:uppercase;color:var(--cream);
+  background:linear-gradient(#2c0a05,#160403);border-radius:3px;transform:rotate(-1.2deg);transform-origin:50% -30px;
+  box-shadow:inset 0 1px 0 rgba(255,240,224,.12),inset 0 0 0 1px rgba(201,163,90,.6),inset 0 0 0 4px #1a0503,inset 0 0 0 5px rgba(201,163,90,.3),0 8px 14px rgba(0,0,0,.65)}
+.dept::before,.dept::after{content:"";position:absolute;bottom:100%;width:2px;height:28px;background:repeating-linear-gradient(#8a6a2c 0 3px,#3a2a10 3px 4px,transparent 4px 6px)}
+.dept::before{left:18px}.dept::after{right:18px}
+.hand{font-family:var(--f-type);font-style:normal;font-weight:400}
+h2{font:400 clamp(2.7rem,5.4vw,4.3rem)/.9 var(--f-poster);text-transform:uppercase;letter-spacing:.012em;color:var(--paper);text-shadow:2px 2px 0 rgba(232,48,26,.42);margin:0;text-wrap:balance}
+
+/* bakelite buttons with a brass edge */
+.btn{display:inline-flex;align-items:center;gap:10px;font:700 14px/1 var(--f-box);letter-spacing:.06em;text-transform:uppercase;
+  padding:16px 22px 15px;text-decoration:none;cursor:pointer;border:0;border-radius:6px;
+  background:linear-gradient(#5e1e13,#370d07);color:var(--paper);
+  box-shadow:inset 0 1px 0 rgba(234,210,154,.28),inset 0 0 0 1px rgba(201,163,90,.18),0 4px 0 #1e0603,0 7px 14px rgba(0,0,0,.65);
+  transition:transform .05s,box-shadow .05s,filter .15s}
+.btn.solid{background:linear-gradient(#f2bba6,#cf8a74);color:var(--ink);
+  box-shadow:inset 0 1px 0 rgba(255,244,214,.55),inset 0 0 0 1px rgba(150,110,40,.35),inset 0 -2px 0 rgba(90,30,10,.25),0 4px 0 #6e3426,0 7px 14px rgba(0,0,0,.65)}
+.btn:hover{filter:brightness(1.12)}
+.btn:active{transform:translateY(3px);box-shadow:inset 0 1px 0 rgba(234,210,154,.2),0 1px 0 #1e0603,0 2px 4px rgba(0,0,0,.6)}
+.btn.solid:active{box-shadow:inset 0 1px 0 rgba(255,244,214,.3),0 1px 0 #6e3426,0 2px 4px rgba(0,0,0,.6)}
+
+/* ---------- header: one slim bar, logo on the left, menu on the right; it stays put while you scroll ---------- */
+.masthead{position:sticky;top:0;z-index:70;
+  background:linear-gradient(rgba(16,4,3,.96),rgba(9,2,1,.93));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(201,163,90,.24);box-shadow:0 1px 0 rgba(0,0,0,.6),0 12px 28px rgba(0,0,0,.45)}
+.mh-in{display:flex;align-items:center;gap:clamp(14px,2.4vw,32px);min-height:78px}
+.masthead .logo{flex:none;display:block;text-decoration:none;color:#f0d3c2;border-radius:6px}
+.masthead .wm{display:block;width:216px;height:67px;overflow:visible;--mark-bg:var(--black)}
+/* the menu: four stops, each with its f-number; a red aperture pointer sits over the page you're on */
+.mainnav{position:relative;margin-left:auto}
+/* what we make, said once in the header on every page */
+.mh-tag{margin:0;padding-left:clamp(14px,2vw,24px);border-left:1px solid rgba(240,211,194,.18);font:800 11px/1.25 var(--f-box);letter-spacing:.2em;text-transform:uppercase;color:var(--cream);white-space:nowrap}
+.mh-tag span{display:block;margin-top:4px;font:400 13px/1.2 var(--f-type);letter-spacing:.02em;text-transform:none;color:#d99a85}
+@media (max-width:1180px){.mh-tag{display:none}}
+.marks{list-style:none;margin:0;padding:0;display:flex;gap:2px}
+.marks a{position:relative;display:grid;justify-items:center;align-content:center;gap:3px;min-height:52px;padding:6px 15px;border-radius:6px;
+  text-decoration:none;color:#f2dccb;font:800 12px/1 var(--f-box);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;transition:color .2s,background .2s}
+.marks a small{font:700 10px/1 var(--f-body);letter-spacing:.04em;color:#a98652;text-transform:none}
+.marks a:hover{color:var(--paper);background:rgba(255,236,228,.05)}
+.marks a:focus-visible{outline:2px dashed var(--paper);outline-offset:2px}
+.marks a.on{color:#ff6a48}
+.marks a.on small{color:var(--gold)}
+.mainnav .index{position:absolute;top:-6px;left:0;width:0;height:0;margin-left:-5px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--safe);
+  filter:drop-shadow(0 0 4px rgba(255,40,20,.8));transition:left .55s cubic-bezier(.3,1.4,.45,1);pointer-events:none}
+.mh-tools{display:flex;align-items:center;gap:10px;flex:none}
+/* the sound knob: off, music, talk radio */
+.sound{display:flex;align-items:center;gap:9px;min-height:44px;background:none;border:0;padding:0;cursor:pointer;color:var(--dim);font:700 10px/1.25 var(--f-box);letter-spacing:.14em;text-transform:uppercase;text-align:left}
+.sound .knob{width:40px;height:40px;border-radius:50%;flex:none;position:relative;transition:transform .25s;
+  background:radial-gradient(circle at 38% 30%,#f0c4a8 0 6%,#8a3a22 7%,#4a1408 60%,#2a0704);
+  box-shadow:0 3px 6px rgba(0,0,0,.8),inset 0 0 0 3px rgba(0,0,0,.25),inset 0 0 0 4px rgba(201,163,90,.45)}
+.sound .knob::before{content:"";position:absolute;inset:2px;border-radius:50%;background:repeating-conic-gradient(rgba(0,0,0,.35) 0 4deg,transparent 4deg 12deg);-webkit-mask:radial-gradient(circle,transparent 62%,#000 63%);mask:radial-gradient(circle,transparent 62%,#000 63%)}
+.sound .knob::after{content:"";position:absolute;left:50%;top:4px;width:3px;height:11px;margin-left:-1.5px;background:var(--gold-hi);border-radius:2px}
+.sound[data-mode="off"] .knob{transform:rotate(-120deg)}
+.sound[data-mode="music"] .knob{transform:rotate(0deg)}
+.sound[data-mode="talk"] .knob{transform:rotate(120deg)}
+.sound:hover .knob{filter:brightness(1.15)}
+.sound .sl{display:block;min-width:52px;font:700 9px/1.3 var(--f-box);letter-spacing:.16em;text-transform:uppercase;color:#b9906a}
+.sound .sl b{display:block;font:800 12px/1.2 var(--f-box);letter-spacing:.12em;color:var(--cream);margin-top:2px}
+/* phones and narrow windows: a Menu button opens the stops as a drop-down list */
+.menu-btn{display:none;align-items:center;gap:9px;min-height:44px;padding:0 14px 0 10px;border-radius:999px;border:1.5px solid rgba(226,160,138,.35);
+  background:rgba(0,0,0,.3);color:#f2dccb;font:800 11px/1 var(--f-box);letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+.menu-btn:hover{border-color:var(--paper)}
+.menu-btn:focus-visible{outline:2px dashed var(--paper);outline-offset:2px}
+.mb-ap{position:relative;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--gold);flex:none}
+.mb-ap::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--safe);transition:inset .25s}
+.masthead.open .mb-ap::after{inset:2px}
+html{scroll-padding-top:96px}
+
+/* looking through the lens: the iris closes, the view changes, the iris opens and the focus pulls in */
+#iris{position:fixed;inset:0;z-index:95;pointer-events:none;display:none}
+#iris.run{display:block}
+#iris.shut{background:#060606}
+#iris canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* main always sits above the room (film strips, glow, haze). Without this, the blur of the focus pull or the arrival fade
+   turns main into its own layer at level 0 and the film strips draw over the cards until the effect ends */
+main{position:relative;z-index:2}
+main.pull{filter:blur(5px);transition:none}
+main.pull-in{filter:blur(0);transition:filter .6s cubic-bezier(.2,.7,.2,1);will-change:filter}
+
+/* ---------- the room: safelight, haze, drifting film ---------- */
+#atmos{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.breath{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(60vw 50vh at 50% 0%,rgba(255,50,25,.16),transparent 70%);animation:breathe 7s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.35}50%{opacity:1}}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:58;background:radial-gradient(ellipse 90% 80% at 50% 40%,transparent 52%,rgba(0,0,0,.7) 100%)}
+.haze{position:fixed;left:0;right:0;bottom:0;height:34vh;pointer-events:none;z-index:1;overflow:hidden;opacity:.55}
+.haze i{position:absolute;bottom:-10vh;left:-30%;width:160%;height:40vh;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 60%,rgba(170,30,15,.22),transparent 65%);animation:drift 38s ease-in-out infinite alternate}
+.haze i+i{left:-50%;animation-duration:52s;animation-direction:alternate-reverse;opacity:.7}
+@keyframes drift{from{transform:translateX(-8%) scaleY(1)}to{transform:translateX(10%) scaleY(1.25)}}
+/* every so often the old safelight stutters */
+body.flick .lamp .glass,body.flick .lamp .cone,body.flick .breath{animation:none;opacity:.25;transition:opacity .04s}
+/* a film strip between sections stands in for part of the gap, so the rhythm stays even either side of it */
+:is(section,.bench):has(+ .reel){padding-bottom:calc(var(--sec) * .6)}
+.reel + :is(section,.bench){padding-top:calc(var(--sec) * .6)}
+/* sections that open with a hanging sign leave room for its chains */
+section:has(.dept){padding-top:calc(var(--sec) + var(--chain))}
+.reel + section:has(.dept){padding-top:calc(var(--sec) * .6 + var(--chain))}
+/* two sections back to back share one gap instead of stacking two */
+:is(section,.bench) + section{padding-top:0}
+:is(section,.bench) + section:has(.dept){padding-top:var(--chain)}
+/* film between sections, advancing as you scroll */
+.reel{position:relative;z-index:2;height:46px;margin-block:0;overflow:hidden;opacity:.85;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent);mask-image:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent)}
+.reel-run{position:absolute;left:-200px;right:-200px;top:0;bottom:0;will-change:transform;background:
+  repeating-linear-gradient(90deg,transparent 0 9px,#2a0b06 9px 17px,transparent 17px 26px) 0 5px/100% 7px no-repeat,
+  repeating-linear-gradient(90deg,transparent 0 9px,#2a0b06 9px 17px,transparent 17px 26px) 0 34px/100% 7px no-repeat,
+  repeating-linear-gradient(90deg,#120403 0 2px,#1b0705 2px 88px) 0 14px/100% 18px no-repeat,#0c0201}
+/* below the fold, things surface out of the paper as they reach the light */
+.will-dev{opacity:.5;filter:blur(2.5px) contrast(.5) brightness(.75) sepia(.2);transition:opacity 2.2s ease-out,filter 2.6s cubic-bezier(.3,.6,.2,1)}
+.will-dev.developed{opacity:1;filter:none}
+
+
+@keyframes sway{0%,100%{transform:rotate(-1.1deg)}50%{transform:rotate(1.3deg)}}
+.pin{position:absolute;top:-20px;left:50%;width:10px;height:34px;margin-left:-5px;z-index:2;
+  background:linear-gradient(90deg,#4a2014,#7a3a26 50%,#4a2014);border-radius:2px;box-shadow:0 2px 3px #000}
+.pin::after{content:"";position:absolute;left:-2px;right:-2px;top:12px;height:4px;background:#2a0b06}
+
+.cta-strip{margin-top:var(--head-gap);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 28px;padding:22px 26px;border:1.5px dashed var(--cream-line);border-radius:4px;background:rgba(0,0,0,.25)}
+.cta-strip p{max-width:60ch;font-size:16px}
+.cta-strip b{font-family:var(--f-box);font-weight:800;color:var(--cream)}
+.cta-pair{display:flex;flex-wrap:wrap;gap:12px}
+
+
+/* ---------- footer: the stamp on the back of every print ---------- */
+footer{position:relative;z-index:2;padding-block:calc(var(--sec) * .5) 22px;font-size:13px;color:var(--text);
+  border-top:1px solid transparent;border-image:linear-gradient(90deg,transparent,rgba(201,163,90,.35),transparent) 1}
+footer .wrap{display:grid;gap:30px}
+.foot-grid{display:grid;grid-template-columns:250px minmax(0,1fr) auto;gap:22px 40px;align-items:center}
+/* the same neon sign as the header, signing off the page */
+.foot-logo{display:block;text-decoration:none}
+.foot-logo svg{display:block;width:100%;height:auto;aspect-ratio:400/124;color:#f0d3c2;--mark-bg:var(--black);overflow:visible}
+.foot-nav{display:flex;flex-wrap:wrap}
+.foot-nav a{display:inline-flex;align-items:center;min-height:44px;font:800 11px/1 var(--f-box);letter-spacing:.2em;text-transform:uppercase;color:#f0d8c8;text-decoration:none}
+.foot-nav a+a::before{content:"";display:inline-block;width:4px;height:4px;margin:0 14px 2px;border-radius:50%;background:var(--gold);opacity:.7;vertical-align:middle}
+.foot-nav a:hover{color:var(--paper)}
+.foot-base{display:flex;flex-wrap:wrap;align-items:center;gap:0 22px;padding-top:4px;border-top:1px dashed rgba(201,163,90,.18)}
+.foot-base .fsmall{margin-left:auto}
+.totop{display:inline-flex;align-items:center;min-height:44px;font:800 10px/1 var(--f-box);letter-spacing:.2em;text-transform:uppercase;color:#a98652;text-decoration:none}
+.totop:hover{color:var(--gold-hi)}
+.foot-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 26px;padding:0 0 30px;border-bottom:1px dashed rgba(201,163,90,.22)}
+.foot-cta p{font-size:17px}
+.foot-cta b{font-family:var(--f-box);font-weight:800;color:var(--cream)}
+.wholine{font-size:15px;max-width:44ch}
+.shoplink.pending{opacity:.7;cursor:default}
+.elsewhere{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:12px;max-width:430px}
+.elsewhere .ew-k{flex-basis:100%;text-align:right}
+.elsewhere .ew-k{font:700 10px/1 var(--f-box);letter-spacing:.24em;text-transform:uppercase;color:#b8955c}
+.ticket{position:relative;display:grid;gap:2px;padding:9px 18px 8px;text-decoration:none;color:var(--ink);background:var(--age),var(--paper);background-size:var(--age-size),auto;
+  font:800 15px/1 var(--f-box);letter-spacing:.04em;transition:transform .15s;
+  box-shadow:inset 0 1px 0 rgba(255,250,240,.55),inset 0 0 0 1px rgba(125,98,48,.55),inset 0 0 0 4px rgba(125,98,48,.25);
+  -webkit-mask:radial-gradient(circle 5px at 0 50%,transparent 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 5px at 100% 50%,transparent 98%,#000) right/51% 100% no-repeat;
+  mask:radial-gradient(circle 5px at 0 50%,transparent 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 5px at 100% 50%,transparent 98%,#000) right/51% 100% no-repeat}
+.ticket small{font:700 9.5px/1 var(--f-box);letter-spacing:.2em;text-transform:uppercase;color:#3d0e05}
+@media (hover:hover){.ticket:hover{transform:rotate(-2deg) translateY(-2px)}}
+footer .fsmall{font-size:12.5px;color:#c88a76}
+
+/* ---------- smaller screens ---------- */
+@media (max-width:1100px){.sound .sl{display:none}.marks a{padding:6px 11px;letter-spacing:.12em}}
+@media (max-width:1040px){
+  .foot-grid{grid-template-columns:220px minmax(0,1fr)}
+  .elsewhere{grid-column:1/-1;justify-content:flex-start;max-width:none}
+  .elsewhere .ew-k{flex-basis:auto;text-align:left;margin-right:4px}
+}
+@media (max-width:860px){
+  .mh-in{min-height:66px}
+  .masthead .wm{width:176px;height:55px}
+  .menu-btn{display:inline-flex}
+  .mh-tools{margin-left:auto}
+  .mainnav{position:absolute;left:0;right:0;top:100%;margin:0;display:none;padding:6px clamp(16px,4vw,44px) 14px;
+    background:linear-gradient(#120403,#0a0201);border-bottom:1px solid rgba(201,163,90,.24);box-shadow:0 18px 30px rgba(0,0,0,.6)}
+  .masthead.open .mainnav{display:block}
+  .marks{flex-direction:column;gap:0}
+  .marks li+li{border-top:1px dashed var(--cream-line)}
+  .marks a{display:flex;justify-content:space-between;align-items:center;min-height:56px;padding:0 4px;font-size:15px;letter-spacing:.14em;border-radius:0}
+  .marks a small{font-size:12px}
+  .marks a.on::before{content:"";position:absolute;left:-14px;top:50%;margin-top:-5px;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--safe)}
+  .mainnav .index{display:none}
+  html{scroll-padding-top:82px}
+}
+@media (max-width:820px){
+  .will-dev{filter:none;transition:opacity 1.2s ease-out}
+}
+@media (max-width:560px){
+  .masthead .wm{width:160px;height:50px}
+  .mh-in{gap:8px}
+  .foot-grid{grid-template-columns:minmax(0,1fr);gap:16px}
+  .foot-logo{width:min(240px,72vw)}
+  .foot-nav{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  .foot-nav a+a::before{display:none}
+  .foot-base .fsmall{margin-left:0;flex:1 1 100%;padding-top:6px}
+  .elsewhere{gap:8px}
+  .ticket{padding:8px 11px 7px;font-size:14px}
+  .wholine{font-size:14px;align-self:center}
+  .elsewhere .ew-k{flex-basis:100%}
+}
+
+@media (max-width:380px){.masthead .wm{width:142px;height:44px}.menu-btn{padding:0 12px 0 9px}}
+@media (prefers-reduced-motion:reduce){
+  #atmos,.breath{display:none}
+  .will-dev{opacity:1;filter:none}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ================= shop pages: the bench, the drying line, the trays, the envelope ================= */
+/* main page: the bench, the drying line, the trays and the envelope. Shared pieces live in site.css. */
+.lamp{position:absolute;left:50%;top:-96px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;z-index:1}
+.lamp .cord{width:2px;height:22px;background:#2a0b06}
+.lamp .hood{width:110px;height:40px;background:linear-gradient(#24100b,#120604);border-radius:50% 50% 6px 6px/80% 80% 6px 6px}
+.lamp .glass{width:84px;height:10px;margin-top:-2px;background:var(--safe);border-radius:0 0 40px 40px/0 0 10px 10px;
+  box-shadow:0 0 14px 3px rgba(232,48,26,.9),0 10px 70px 20px rgba(232,48,26,.35);animation:on 2.4s ease-out both,glow 7s 2.4s ease-in-out infinite}
+.lamp .cone{position:absolute;top:44px;left:50%;width:560px;height:520px;margin-left:-280px;pointer-events:none;
+  background:radial-gradient(ellipse 50% 100% at 50% 0,rgba(255,60,30,.17),rgba(255,40,20,.06) 45%,transparent 75%);
+  clip-path:polygon(43% 0,57% 0,100% 100%,0 100%);filter:blur(6px);mix-blend-mode:screen;animation:conebreath 7s 2.4s ease-in-out infinite}
+@keyframes on{0%,6%{opacity:.15}8%{opacity:1}11%{opacity:.25}13%{opacity:.9}17%{opacity:.4}22%,100%{opacity:1}}
+@keyframes glow{0%,100%{box-shadow:0 0 14px 3px rgba(232,48,26,.9),0 10px 70px 20px rgba(232,48,26,.35)}50%{box-shadow:0 0 20px 6px rgba(255,70,40,1),0 10px 110px 40px rgba(232,48,26,.5)}}
+@keyframes conebreath{0%,100%{opacity:.75}50%{opacity:1}}
+
+/* ---------- the bench: paper box + developing tray ---------- */
+.bench{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:clamp(36px,6vw,80px);align-items:start;padding-block:var(--sec-first) var(--sec);position:relative}
+.box{position:relative;background:var(--age),var(--paper);background-size:var(--age-size),auto;color:var(--ink);transform:none;
+  border:2px solid #f3c6b2;background-clip:padding-box;padding:6px;backface-visibility:hidden;outline:1px solid transparent;   /* a crisp printed edge all the way round, the dark band included */
+  box-shadow:0 0 0 1px rgba(43,9,4,.9),0 3px 0 1px #7d3e30,0 30px 50px rgba(0,0,0,.8)}
+.box .band{background:var(--ink);color:var(--paper);padding:20px 24px 16px;box-shadow:0 0 0 1.5px rgba(43,9,4,.9)}
+.box .kicker{font:800 10.5px/1.6 var(--f-box);letter-spacing:.24em;text-transform:uppercase;opacity:.8;margin-bottom:10px}
+.bandtop{display:flex;align-items:center;gap:14px}
+.bwm{display:block;width:100%;height:auto;aspect-ratio:400/124;color:var(--paper);--mark-bg:var(--ink);overflow:visible;margin:4px 0 0}
+.box .sub{display:flex;justify-content:space-between;gap:12px;font:700 12px/1 var(--f-box);letter-spacing:.24em;margin-top:12px}
+.stripes{height:14px;background:repeating-linear-gradient(-45deg,var(--ink) 0 7px,transparent 7px 14px);opacity:.85;margin-top:3px}
+.box h1{font:400 clamp(2.6rem,4.9vw,3.9rem)/.92 var(--f-poster);text-transform:uppercase;letter-spacing:.01em;margin:22px 24px 18px;text-wrap:balance;text-shadow:2px 1px 0 rgba(232,48,26,.28)}
+.box h1 .h1-main{display:block;font-size:clamp(3.4rem,6.6vw,5.6rem);line-height:.86}
+.box h1 .h1-sub{display:block;margin-top:16px;font:400 clamp(1.05rem,1.5vw,1.25rem)/1.4 var(--f-type);text-transform:none;letter-spacing:0;text-shadow:none;max-width:30ch}
+.box .warn{border-block:2px solid var(--ink);margin:0 24px;padding:7px 0;font:800 11px/1 var(--f-box);letter-spacing:.2em;text-align:center}
+.box dl{margin:14px 24px 0;padding:0 0 22px;display:grid;grid-template-columns:auto 1fr;font:400 14px/1.3 var(--f-type)}
+.box dt,.box dd{margin:0;padding:8px 0;border-top:1px solid rgba(43,9,4,.35)}
+.box dt{font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.06em;padding-right:22px}
+.box .stamp-no{position:absolute;right:18px;bottom:-30px;transform:rotate(4deg)}
+.qc{position:absolute;top:-30px;right:-26px;z-index:3;width:84px;height:84px;border-radius:50%;display:grid;place-content:center;text-align:center;gap:1px;
+  background:var(--age),#efe0c8;background-size:var(--age-size),auto;color:var(--ink);transform:rotate(12deg);box-shadow:0 3px 8px rgba(0,0,0,.5);
+  border:2px solid var(--ink);outline:1px solid #8a6a2c;outline-offset:-7px}
+.qc span{font:800 7.5px/1.2 var(--f-box);letter-spacing:.16em;text-transform:uppercase;max-width:62px;margin-inline:auto}
+.qc b{font:400 21px/1 var(--f-type);color:#8a1a0c;transform:rotate(-6deg)}
+.lede{margin-top:var(--head-gap);max-width:52ch}
+/* the batch tag hangs below the box, so the bench keeps a little extra room underneath */
+.bench:has(+ .reel){padding-bottom:calc(var(--sec) * .6 + 30px)}
+.lede strong{color:var(--cream);font-weight:400}
+
+.traywrap{position:relative;padding-top:14px;margin-top:40px}
+.devtray{position:relative;padding:20px;border-radius:16px;background:linear-gradient(170deg,#1a0605,#0a0201);
+  box-shadow:inset 0 0 0 2px #2a0b07,inset 0 14px 30px #000,0 40px 70px rgba(0,0,0,.85)}
+.devtray canvas{display:block;width:100%;height:auto;aspect-ratio:4/3;max-width:100%;border-radius:1px}
+.devtray .tape{position:absolute;top:-6px;left:28px;--r:-3deg;z-index:2}
+.devtray.rock{animation:rock 1.3s ease-in-out}
+@keyframes rock{25%{transform:rotate(-.8deg) translateY(2px)}75%{transform:rotate(.8deg)}}
+.tongs{position:absolute;right:-14px;top:30%;width:44px;height:180px;transform:rotate(18deg);z-index:3;pointer-events:none}
+.traycap{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-top:18px}
+.traycap .hand{font-size:17px;color:var(--cream);line-height:1}
+.traycap button{background:none;border:0;padding:0;font:400 14px var(--f-type);color:var(--text);text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.traycap button:hover{color:var(--paper)}
+
+/* two ways in */
+.paths{margin-top:var(--stack);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.path{display:grid;gap:6px;align-content:start;padding:20px 20px 18px;border-radius:6px;text-decoration:none;color:var(--text);
+  background:linear-gradient(rgba(30,6,4,.8),rgba(14,3,2,.8));border:1.5px solid rgba(226,160,138,.3);transition:border-color .2s,transform .2s}
+.path:first-child{background:var(--age),var(--paper);background-size:var(--age-size),auto;background-clip:padding-box;color:var(--ink);border-color:#f3c6b2;
+  box-shadow:inset 0 0 0 5px var(--paper),inset 0 0 0 6.5px rgba(43,9,4,.6),0 12px 26px rgba(0,0,0,.55)}   /* a crisp printed edge with an inner rule, like a ticket */
+.path:first-child:hover{border-color:#fff0e6}
+@media (hover:hover){.path:hover{transform:translateY(-3px);border-color:var(--paper)}}
+.path .pk{font:700 10px/1 var(--f-box);letter-spacing:.24em;text-transform:uppercase;opacity:.9}
+.path:not(:first-child) .pk{color:#e2a08a}
+.path b{font:900 21px/1.1 var(--f-box)}
+.path .pd{font-size:14.5px;line-height:1.5}
+.path .pgo{margin-top:6px;font:800 12px/1 var(--f-box);letter-spacing:.1em;text-transform:uppercase;color:#721306}
+.path:not(:first-child) b,.path:not(:first-child) .pgo{color:var(--cream)}
+
+/* ---------- the drying line (shop) ---------- */
+.line-sec{padding-block:var(--sec);overflow:hidden}
+.line-sec .head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:12px 40px;margin-bottom:var(--head-gap)}
+.line-sec .head h2{margin-top:2px}
+.line-sec .head p{max-width:44ch}
+.line-sec .head a.shoplink{color:var(--paper);text-decoration-color:var(--safe);text-underline-offset:3px}
+.hint{display:block;margin-top:6px;font-size:13px;color:#cf8068}
+.line{position:relative;padding-top:26px}
+.line+.line{margin-top:70px}
+.line svg.wire{position:absolute;left:-6%;width:112%;top:0;height:60px;overflow:visible}
+.prints{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(14px,2.4vw,32px);align-items:start}
+.print{margin:0;position:relative;transform-origin:50% -18px;animation:sway 7s ease-in-out infinite;filter:drop-shadow(0 16px 22px rgba(0,0,0,.75));
+  rotate:var(--wind,0deg);transition:rotate .9s cubic-bezier(.3,1.7,.4,1)}
+@media (hover:hover){.print:hover{rotate:calc(var(--wind,0deg) + 2.5deg)}}
+.print:nth-child(5n+2){animation-delay:-1.4s;margin-top:20px}
+.print:nth-child(5n+3){animation-delay:-2.7s;margin-top:30px}
+.print:nth-child(5n+4){animation-delay:-.6s;margin-top:20px}
+.print:nth-child(5n){animation-delay:-3.8s;margin-top:4px}
+.flip{display:block;width:100%;padding:0;border:0;background:none;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.3,.7,.25,1);color:inherit;font:inherit;text-align:left}
+.flip:focus-visible{outline:2px dashed var(--paper);outline-offset:6px}
+.print.flipped .flip{transform:rotateY(180deg)}
+.face{display:block;background:var(--paper);padding:11px;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.face.front img,.print .front canvas{display:block;width:100%;height:auto;aspect-ratio:4/5;max-width:100%}
+.face.front img{object-fit:cover;background:#3a120a;filter:grayscale(1) sepia(1) hue-rotate(-28deg) saturate(2.4) contrast(1.08) brightness(.88)}
+/* prints come up in the developer as they reach the light */
+.print .face.front>canvas,.print .face.front>img{transition:opacity 1.3s cubic-bezier(.5,0,.3,1),filter 1.6s cubic-bezier(.4,0,.2,1)}
+.print.latent .face.front>canvas,.print.latent .face.front>img{opacity:.18;filter:blur(2px) contrast(.5)}
+.print.latent .face.front{background:#efc3ad}
+.face.back{position:absolute;inset:0;transform:rotateY(180deg);background:var(--age),var(--paper);background-size:var(--age-size),auto;color:var(--ink);
+  display:flex;flex-direction:column;justify-content:space-between;padding:18px 16px;overflow:hidden}
+.back .bk-h{font:800 9px/1.35 var(--f-box);letter-spacing:.18em;text-transform:uppercase;opacity:.75}
+.back svg{width:62%;aspect-ratio:1;height:auto;max-width:100%;align-self:center;color:#8a1a0c;opacity:.6;transform:rotate(-14deg);--mark-bg:var(--paper)}
+.back .bk-no{font:900 22px/1 var(--f-box)}
+.back .bk-name{font:400 13.5px/1.3 var(--f-type)}
+.back .bk-st{align-self:flex-start;border:2px solid #721306;color:#721306;font:900 10px/1 var(--f-box);letter-spacing:.16em;text-transform:uppercase;padding:5px 7px;transform:rotate(-6deg);margin-top:6px}
+.print figcaption{margin-top:16px}
+.print figcaption .tape{font-size:11.5px;--r:-1deg}
+.print figcaption small{display:block;margin-top:8px;font-size:12.5px;line-height:1.4;color:var(--text)}
+.print .price{position:relative;display:inline-block;margin-top:8px;padding:4px 9px 3px 16px;background:var(--paper);color:var(--ink);font:800 14px/1 var(--f-box);letter-spacing:.04em;transform:rotate(-2deg);
+  clip-path:polygon(8px 0,100% 0,100% 100%,8px 100%,0 50%)}
+.print .price::before{content:"";position:absolute;left:7px;top:50%;width:4px;height:4px;margin-top:-2px;border-radius:50%;background:#7a3a26;box-shadow:inset 0 1px 1px rgba(0,0,0,.5)}
+.print .price.sold{background:#5a2418;color:var(--paper);text-decoration:line-through}
+.print .buyrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:10px}
+.print .buy{padding:10px 12px 9px;font-size:11px;letter-spacing:.08em}
+.print .ask{display:inline-block;margin-top:0;font:800 11px/1.2 var(--f-box);letter-spacing:.1em;text-transform:uppercase;color:var(--paper);text-decoration:none;border-bottom:1.5px solid var(--safe);padding-bottom:2px}
+.print .ask:hover{color:#fff0e8;border-color:var(--paper)}
+.promises{list-style:none;margin:var(--head-gap) 0 0;padding:20px 0 0;border-top:1px dashed var(--cream-line);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.promises li{display:grid;gap:4px;min-width:0}
+.promises b{font:800 13px/1.2 var(--f-box);letter-spacing:.12em;text-transform:uppercase;color:var(--cream)}
+.promises span{font-size:14px}
+.promises a{color:var(--paper);text-underline-offset:3px;text-decoration-color:var(--safe)}
+
+/* ---------- the owner's negative drawer (editors only) ---------- */
+.drawer{margin-top:64px;background:linear-gradient(#2a0c07,#1a0604);border:1px solid #3d130b;border-radius:6px;padding:clamp(18px,3vw,28px);
+  box-shadow:inset 0 1px 0 rgba(255,140,110,.12),0 24px 40px rgba(0,0,0,.7)}
+.dhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px 24px;flex-wrap:wrap;margin-bottom:18px}
+.dhead b{display:block;font:900 22px/1 var(--f-box);color:var(--paper)}
+.dhead span{display:block;margin-top:6px;font-size:14px;color:var(--text)}
+.dhead .dcount{font:700 11px/1.3 var(--f-box);letter-spacing:.14em;text-transform:uppercase;color:#b8705a}
+.drop{display:grid;place-items:center;text-align:center;gap:6px;padding:34px 18px;border:2px dashed var(--paper-lo);border-radius:4px;cursor:pointer;
+  background:repeating-linear-gradient(-45deg,rgba(255,80,50,.03) 0 10px,transparent 10px 20px);transition:background .15s,border-color .15s}
+.drop input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.drop b{font:800 17px/1.2 var(--f-box);color:var(--paper)}
+.drop span{font-size:14px;color:var(--text);max-width:52ch}
+.drop.over,.drop:hover{border-color:var(--paper);background:rgba(255,80,50,.08)}
+.drop:focus-within{outline:2px dashed var(--paper);outline-offset:4px}
+.dstatus{min-height:1.6em;margin-top:12px;font-size:14px;color:var(--paper)}
+.dlist{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:12px}
+.dlist li{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:16px;align-items:center;background:rgba(0,0,0,.25);border:1px solid #2e0e08;padding:10px;border-radius:4px}
+.dlist img{width:72px;height:90px;object-fit:cover;filter:grayscale(1) sepia(1) hue-rotate(-28deg) saturate(2.4) brightness(.9)}
+.dfields{display:grid;grid-template-columns:90px minmax(0,1.3fr) minmax(0,1.3fr) 130px;gap:8px 10px;min-width:0}
+.dfields label:nth-child(5){grid-column:1/2}.dfields label:nth-child(6){grid-column:2/-1}
+.dfields label{display:grid;gap:3px;font:700 9.5px/1 var(--f-box);letter-spacing:.14em;text-transform:uppercase;color:#b8705a;min-width:0}
+.dfields input,.dfields select{width:100%;min-width:0;background:#0d0302;border:1px solid #3d130b;color:var(--paper);font:400 16px/1.2 var(--f-type);padding:8px;border-radius:2px}
+.dfields input:focus,.dfields select:focus{outline:none;border-color:var(--paper-lo)}
+.dact{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.dact button{background:#0d0302;border:1px solid #3d130b;color:var(--text);font:700 11px/1 var(--f-box);letter-spacing:.08em;text-transform:uppercase;padding:8px 10px;border-radius:3px;cursor:pointer}
+.dact button:hover{color:var(--paper);border-color:var(--paper-lo)}
+.dact button:disabled{opacity:.35;cursor:default}
+.dact button.really{background:var(--safe);color:var(--black);border-color:var(--safe)}
+.reqs{margin-top:26px;padding-top:18px;border-top:1px dashed #3d130b;display:grid;gap:6px}
+.reqs>b{font:900 17px/1 var(--f-box);color:var(--paper)}
+.rq-note{font-size:13px;color:#b8705a}
+#reqList{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:10px}
+#reqList li{background:rgba(0,0,0,.25);border:1px solid #2e0e08;border-radius:4px;padding:12px 14px;font-size:14px;min-width:0;overflow-wrap:anywhere}
+#reqList .rq-empty{color:var(--dim)}
+.rq-h{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.rq-h b{font:800 14px/1.2 var(--f-box);color:var(--paper)}
+.rq-h time{margin-left:auto;font-size:12px;color:var(--dim)}
+.rq-msg{margin-top:6px;font-style:italic}
+
+/* ---------- what we do: four trays ---------- */
+.trays-sec{padding-block:var(--sec)}
+.trays-head{margin-bottom:var(--head-gap)}
+.trays-head p{margin-top:var(--stack);max-width:52ch}
+.trays{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.tray{position:relative;padding:16px;border-radius:12px;background:linear-gradient(170deg,#170504,#090201);
+  box-shadow:inset 0 0 0 2px #260a06,inset 0 10px 22px #000,0 24px 40px rgba(0,0,0,.8)}
+.tray .tape{position:absolute;top:-12px;left:14px;font-size:12px;z-index:2}
+.tray:nth-child(2) .tape{--r:2deg}.tray:nth-child(3) .tape{--r:-2.5deg}.tray:nth-child(4) .tape{--r:1deg}
+.sheet{position:relative;background:var(--age),var(--paper);background-size:var(--age-size),auto;color:var(--ink);padding:22px 18px 20px;transform:rotate(var(--sr,1deg));min-height:100%;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,250,240,.5)}
+.tray:nth-child(2) .sheet{--sr:-1.4deg}.tray:nth-child(3) .sheet{--sr:.6deg}.tray:nth-child(4) .sheet{--sr:-.8deg}
+.sheet::after{content:"";position:absolute;inset:-40%;pointer-events:none;background:repeating-linear-gradient(100deg,transparent 0 40px,rgba(90,14,6,.10) 40px 70px,transparent 70px 120px)}
+.sheet h3{font:400 36px/.9 var(--f-poster);text-transform:uppercase;margin:0 0 10px;letter-spacing:.02em}
+.sheet p{font-size:14.5px;line-height:1.5}
+/* ---------- commission: the lab envelope ---------- */
+.env-sec{padding-block:var(--sec)}
+.env-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(30px,6vw,80px);align-items:start}
+.env-grid>div>p{margin-top:var(--stack);max-width:42ch}
+.howorder{list-style:none;counter-reset:o;margin:var(--head-gap) 0 0;padding:0;display:grid;gap:12px;max-width:48ch}
+.howorder li{counter-increment:o;position:relative;padding-left:42px;min-height:28px;font-size:15px;line-height:1.5}
+.howorder li::before{content:counter(o);position:absolute;left:0;top:-1px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--cream-line);font:800 13px/1 var(--f-box);color:var(--paper)}
+.howorder b{font-family:var(--f-box);font-weight:800;color:var(--cream)}
+form.env{position:relative;background:var(--age),var(--paper);background-size:var(--age-size),auto;color:var(--ink);padding:0 0 26px;box-shadow:inset 0 1px 0 rgba(255,250,240,.5),0 30px 50px rgba(0,0,0,.8);transform:rotate(-.6deg)}
+.env .flap{height:46px;background:var(--paper-lo);clip-path:polygon(0 0,100% 0,96% 100%,4% 100%)}
+.env .closer{position:absolute;left:0;right:0;top:0;height:52%;z-index:3;background:linear-gradient(180deg,#c47f6b,#b06a57);
+  clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:50% 0;transform:perspective(800px) rotateX(-92deg);transition:transform .55s cubic-bezier(.5,0,.3,1.2);pointer-events:none}
+.env.sealed .closer{transform:perspective(800px) rotateX(0deg)}
+.env .top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:20px 26px 12px;border-bottom:2px solid var(--ink)}
+.env .top b{display:block;font:800 18px/1.05 var(--f-box)}
+.env .top span{font:700 11px/1.4 var(--f-box);letter-spacing:.1em;text-transform:uppercase}
+.env .no{font:400 17px/1 var(--f-type);letter-spacing:.08em;white-space:nowrap}
+.env .rows{padding:6px 26px 0}
+.env .f{display:grid;grid-template-columns:150px minmax(0,1fr);align-items:end;gap:12px;padding:12px 0 0}
+.env .f.tall{align-items:start}
+.env label{font:700 12px/1.2 var(--f-box);letter-spacing:.08em;text-transform:uppercase}
+.env input[type=text],.env input[type=email]{width:100%;background:transparent;border:0;border-bottom:1.5px dotted var(--ink);color:var(--ink);font:400 17px/1.2 var(--f-type);padding:6px 2px}
+.env textarea{width:100%;background:transparent;border:1.5px dotted var(--ink);color:var(--ink);font:400 15.5px/1.5 var(--f-type);padding:8px;resize:vertical;min-height:72px}
+.env input::placeholder,.env textarea::placeholder{color:rgba(43,9,4,.38)}
+.env input:focus{outline:none;border-bottom-style:solid}
+.env textarea:focus{outline:none;border-style:solid}
+.env fieldset{border:0;margin:18px 0 0;padding:0;display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px}
+.env legend{float:left;font:700 12px/1.2 var(--f-box);letter-spacing:.08em;text-transform:uppercase;padding:0;margin:0 12px 0 0;width:150px}
+.env .opts{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14.5px}
+.env .opts label{font:400 14.5px var(--f-type);text-transform:none;letter-spacing:0;display:flex;gap:7px;align-items:center;cursor:pointer}
+.env input[type=radio]{accent-color:var(--ink);width:15px;height:15px;margin:0}
+.env .hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+.env .send{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;padding:24px 26px 0}
+.env .send .btn{color:var(--paper);background:var(--ink)}
+.env .send .btn:hover{background:var(--safe);color:var(--black)}
+.env .out{font-size:13.5px;line-height:1.45;max-width:36ch}
+.stamp{position:absolute;right:26px;top:110px;z-index:4;font:900 22px/1 var(--f-box);letter-spacing:.1em;color:#8a1a0c;
+  border:3px double #8a1a0c;padding:8px 12px;transform:rotate(-14deg) scale(1.6);opacity:0;pointer-events:none;mix-blend-mode:multiply;transition:transform .18s cubic-bezier(.2,1.4,.4,1),opacity .1s}
+.stamp small{display:block;font-size:10px;letter-spacing:.2em;margin-top:5px;text-align:center}
+.env.sealed .stamp{opacity:.85;transform:rotate(-14deg) scale(1);transition-delay:.55s}
+.sent{margin-top:22px;padding:20px 22px;border:2px solid var(--paper-lo);border-radius:4px;background:rgba(0,0,0,.3);display:grid;gap:10px;justify-items:start}
+.sent b{font:800 18px/1.2 var(--f-box);color:var(--cream)}
+.sent p{font-size:15px;line-height:1.55}
+
+/* ---------- smaller screens ---------- */
+@media (max-width:960px){
+  .bench,.env-grid{grid-template-columns:minmax(0,1fr)}
+  .trays{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:34px}
+  .prints{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .promises{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tongs,.lamp{display:none}
+  .traywrap{margin-top:0}
+}
+@media (max-width:860px){
+  .dfields{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dlist li{grid-template-columns:60px minmax(0,1fr)}
+  .dlist img{width:60px;height:75px}
+  .dact{grid-column:1/-1;justify-content:flex-start}
+}
+/* phones: thumb-sized targets, no zoom on focus */
+@media (max-width:820px){
+  .env input[type=text],.env input[type=email],.env textarea{font-size:16px}
+  .env .rows{padding:6px 18px 0}.env .top{padding:16px 18px 10px}.env .send{padding:20px 18px 0}
+  .traycap button,.promises a,.print .ask{display:inline-flex;align-items:center;min-height:44px}
+  .line-sec .head a.shoplink{display:inline;padding-block:12px}
+  .print .ask{border-bottom:0;text-decoration:underline;text-decoration-color:var(--safe);text-underline-offset:4px}
+  .env .opts label{min-height:40px}
+}
+@media (max-width:560px){
+  .trays{grid-template-columns:minmax(0,1fr)}
+  .prints{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .print{margin-top:0!important}
+  .env .f,.env fieldset{grid-template-columns:minmax(0,1fr);gap:2px}
+  .env legend{float:none;width:auto;margin-bottom:6px}
+  .stamp{top:auto;bottom:70px;right:22px;font-size:16px;padding:6px 9px;transform:rotate(-14deg) scale(1.1)}
+  .qc{top:auto;right:auto;bottom:-30px;left:-8px;width:72px;height:72px}.qc b{font-size:17px}
+  .box .sub{flex-direction:column;gap:6px}
+  .box .kicker{letter-spacing:.14em;font-size:9.5px}
+}
+@media (max-width:480px){.paths{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:960px){
+  .traywrap{display:flex;flex-direction:column}
+  .traywrap .paths{order:-1;margin:0 0 calc(var(--head-gap) + 10px)}
+}
+/* phones: the box keeps its headline and loses the spec sheet, so the two ways in sit near the top */
+@media (max-width:560px){.box dl{display:none}.box .warn{margin-bottom:22px}.qc{top:-24px;right:-8px;bottom:auto;left:auto;width:64px;height:64px}.qc b{font-size:15px}.qc span{font-size:6.5px}}
+@media (max-width:380px){
+  .box .sub{flex-direction:column;gap:6px;letter-spacing:.16em;font-size:11px}
+  .qc{width:62px;height:62px}.qc b{font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){
+  .print.latent .face.front>canvas,.print.latent .face.front>img{opacity:1;filter:none}
+}
+
+/* ================= structure added with the separate pages ================= */
+/* a page's own title is set like the section headings */
+h1.ph,h2.ph{font:400 clamp(2.9rem,6vw,4.8rem)/.9 var(--f-poster);text-transform:uppercase;letter-spacing:.012em;color:var(--paper);text-shadow:2px 2px 0 rgba(232,48,26,.42);margin:0;text-wrap:balance}
+/* home: the line ends with a way into the full shop */
+.seeall{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-top:var(--head-gap);padding-top:var(--stack);border-top:1px dashed var(--cream-line)}
+.seeall span{font-size:15px}
+.seeall span a{color:var(--cream);text-decoration-color:var(--safe);text-underline-offset:3px}
+/* shop: the filter is a row of darkroom tabs */
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 calc(var(--head-gap) * .6)}
+.filters button{min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid rgba(226,160,138,.3);background:rgba(0,0,0,.25);color:#f2dccb;cursor:pointer;
+  font:800 11px/1 var(--f-box);letter-spacing:.16em;text-transform:uppercase;transition:border-color .2s,background .2s,color .2s}
+.filters button:hover{border-color:var(--paper)}
+.filters button.on{background:var(--paper);border-color:var(--paper);color:var(--ink)}
+.fcount{margin-left:auto;font:700 10px/1 var(--f-box);letter-spacing:.2em;text-transform:uppercase;color:#a98652}
+.empty{margin:20px 0 0;font-size:16px}.empty a{color:var(--cream)}
+@media (max-width:820px){.seeall span a,.lamp-missing a,.lamp-specs a,.empty a,.faq details p a{display:inline;padding-block:12px}}
+.shop-sec .promises{margin-top:var(--head-gap)}
+/* a single lamp: the print hangs on the left, its tag and details on the right */
+.lamp-sec{padding-block:var(--sec-first) var(--sec)}
+.back{display:inline-flex;align-items:center;min-height:44px;margin-bottom:calc(var(--stack) * .5);font:800 11px/1 var(--f-box);letter-spacing:.18em;text-transform:uppercase;color:#f2dccb;text-decoration:none}
+.back:hover{color:var(--paper)}
+.lampcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,6vw,84px);align-items:start;margin-top:var(--chain)}
+.lamp-photo{position:relative;margin:0;transform:rotate(-1.2deg);transform-origin:50% -18px;filter:drop-shadow(0 22px 30px rgba(0,0,0,.75))}
+.lamp-photo .pin{top:-22px}
+.lamp-frame{background:var(--paper);padding:14px}
+.lamp-frame canvas,.lamp-frame img{display:block;width:100%;height:auto;aspect-ratio:4/5;max-width:100%;object-fit:cover}
+.lamp-frame img{filter:grayscale(1) sepia(1) hue-rotate(-28deg) saturate(2.4) contrast(1.08) brightness(.88)}
+.lamp-info{min-width:0}
+.lamp-cam{margin-top:var(--stack);font-size:17px;color:var(--cream)}
+.lamp-buy{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin:var(--stack) 0}
+.lamp-price{position:relative;display:inline-block;padding:7px 14px 6px 22px;background:var(--paper);color:var(--ink);font:400 30px/1 var(--f-poster);letter-spacing:.03em;transform:rotate(-2deg);
+  clip-path:polygon(10px 0,100% 0,100% 100%,10px 100%,0 50%)}
+.lamp-price::before{content:"";position:absolute;left:9px;top:50%;width:5px;height:5px;margin-top:-2.5px;border-radius:50%;background:#7a3a26}
+.lamp-price.sold{background:#5a2418;color:var(--paper);text-decoration:line-through}
+.lamp-status{border:2px solid currentColor;color:var(--paper);font:900 11px/1 var(--f-box);letter-spacing:.18em;text-transform:uppercase;padding:7px 9px 6px;transform:rotate(-4deg)}
+.lamp-status[data-open="false"]{color:#ff6a48}
+.lamp-details{margin-top:var(--stack);max-width:52ch;font-size:16px;white-space:pre-line}
+.lamp-specs{margin:var(--head-gap) 0 0;display:grid;grid-template-columns:auto minmax(0,1fr);font-size:14.5px;max-width:560px}
+.lamp-specs dt,.lamp-specs dd{margin:0;padding:10px 0;border-top:1px dashed var(--cream-line)}
+.lamp-specs dt{padding-right:22px;font:800 10.5px/1.6 var(--f-box);letter-spacing:.16em;text-transform:uppercase;color:#a98652}
+.lamp-specs a{color:var(--cream);text-decoration-color:var(--safe);text-underline-offset:3px}
+.lamp-missing{padding-block:var(--sec)}.lamp-missing p{margin-top:var(--stack)}.lamp-missing a{color:var(--cream)}
+@media (max-width:860px){.lampcard{grid-template-columns:minmax(0,1fr)}.lamp-photo{max-width:440px}}
+/* the commission page leads straight into the envelope */
+main > .env-sec:first-child{padding-top:calc(var(--sec-first) + var(--chain))}
+
+/* skip link for keyboard visitors */
+.skip{position:absolute;left:12px;top:-60px;z-index:200;padding:12px 16px;background:var(--paper);color:var(--ink);font:800 12px/1 var(--f-box);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border-radius:4px}
+.skip:focus{top:12px}
+
+/* ================= questions at the counter (home) ================= */
+.faq-sec{padding-block:var(--sec)}
+.faq-head{margin-bottom:var(--head-gap)}
+.faq{display:grid;gap:12px;max-width:860px}
+.faq details{border:1.5px dashed var(--cream-line);border-radius:6px;background:rgba(0,0,0,.28);transition:border-color .2s,background .2s}
+.faq details[open]{border-style:solid;border-color:rgba(226,160,138,.35);background:rgba(20,4,3,.55)}
+.faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;padding:12px 18px;
+  font:800 14px/1.3 var(--f-box);letter-spacing:.06em;text-transform:uppercase;color:var(--cream)}
+.faq summary::-webkit-details-marker{display:none}
+/* an aperture mark that opens when the answer does */
+.faq summary::after{content:"";flex:none;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--gold);
+  background:radial-gradient(circle,var(--safe) 0 2px,transparent 2.5px);transition:background .25s,transform .25s}
+.faq details[open] summary::after{background:radial-gradient(circle,var(--safe) 0 6px,transparent 6.5px);transform:rotate(60deg)}
+.faq summary:hover{color:var(--paper)}
+.faq summary:focus-visible{outline:2px dashed var(--paper);outline-offset:-4px}
+.faq details p{padding:0 18px 18px;max-width:66ch;font-size:15.5px;line-height:1.65}
+.faq details p a{color:var(--cream);text-decoration-color:var(--safe);text-underline-offset:3px}
+.trays-sec + .faq-sec{padding-top:0}
+/* the home lede is a note from the garage, signed by hand */
+.bench .lede .from{display:block;margin-top:12px;font:400 1.35rem/1 Yellowtail,cursive;color:var(--paper);transform:rotate(-2deg);transform-origin:left}
+
+/* ---------- retro finish: printed-label frames, square shop corners, a ledger for questions ---------- */
+/* the hero box: an inner printed rule a few millimetres in, like a 1950s carton label; it reads cream on the dark band and ink on the paper */
+.box::after{content:"";position:absolute;inset:3.5px;border:1.5px solid rgba(43,9,4,.55);pointer-events:none;z-index:2}   /* the printed rule sits just outside the dark band and the hazard stripes, never across them */
+.box .band{box-shadow:none}
+/* shop fittings get the square corners of printed stock, not app rounding */
+.btn,.path,.menu-btn,.filters button{border-radius:2px}
+.path:first-child{box-shadow:inset 0 0 0 5px var(--paper),inset 0 0 0 6.5px rgba(43,9,4,.6),0 12px 26px rgba(0,0,0,.55)}
+.path:not(:first-child){box-shadow:inset 0 0 0 5px rgba(14,3,2,.0),inset 0 0 0 6.5px rgba(226,160,138,.22)}
+.path b{font:400 31px/.95 var(--f-poster);text-transform:uppercase;letter-spacing:.02em}
+.cta-strip b,.foot-cta b{font:400 1.55em/1 var(--f-poster);text-transform:uppercase;letter-spacing:.03em;vertical-align:-.08em}
+/* questions at the counter: a ruled ledger with Q. and A., not app accordions */
+.faq{gap:0;border-top:2px solid var(--cream-line);border-bottom:1px solid var(--cream-line)}
+.faq details,.faq details[open]{border:0;border-radius:0;background:none;border-top:1px dashed var(--cream-line)}
+.faq details:first-child{border-top:0}
+.faq summary{padding:14px 4px}
+.faq summary::before{content:"Q.";flex:none;font:400 20px/1 var(--f-type);color:var(--safe);margin-right:-4px}
+.faq summary{justify-content:flex-start}
+.faq summary::after{margin-left:auto}
+.faq details p{padding:0 4px 20px 38px;position:relative}
+.faq details p::before{content:"A.";position:absolute;left:4px;top:1px;font:400 20px/1 var(--f-type);color:var(--paper)}
+
+/* ---------- the sound control: a 1950s tabletop radio, tuning window and Bakelite knob ---------- */
+.sound{gap:8px}
+.sound .sl{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}   /* the dial says it; screen readers get the label */
+.sound .dial{display:block;flex:none;width:118px;height:40px;padding:3px;border-radius:7px 7px 5px 5px;
+  background:linear-gradient(#5a2a16,#2a0f07 55%,#1a0804);box-shadow:inset 0 1px 0 rgba(255,214,170,.28),inset 0 -1px 0 rgba(0,0,0,.6),0 0 0 1px #0d0302,0 3px 6px rgba(0,0,0,.7)}
+.sound .glass{position:relative;display:grid;grid-template-rows:1fr 1fr;height:100%;border-radius:4px 4px 3px 3px;overflow:hidden;
+  background:linear-gradient(180deg,#f3dcae,#d9b47c 60%,#c49460);box-shadow:inset 0 2px 4px rgba(60,20,5,.55),inset 0 0 0 1px rgba(60,20,5,.35);
+  filter:brightness(.5) saturate(.75);transition:filter .5s,box-shadow .5s}
+.sound .glass::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.35),transparent 38%);pointer-events:none}   /* the shine on the glass */
+.sound .scale{display:flex;justify-content:space-between;align-items:flex-end;padding:0 6px 1px;font:800 7px/1 var(--f-box);letter-spacing:.02em;color:#4a1a08;
+  background:repeating-linear-gradient(90deg,rgba(74,26,8,.75) 0 1px,transparent 1px 5px) left bottom/100% 3px no-repeat;border-bottom:1px solid rgba(74,26,8,.55)}
+.sound .scale i{font-style:normal}
+.sound .bands{display:grid;grid-template-columns:repeat(3,1fr);align-items:center;text-align:center;font:400 9px/1 var(--f-type);color:#5a2410}
+.sound .bands em{font-style:normal;transition:color .3s}
+.sound .needle{position:absolute;top:1px;bottom:1px;left:16.67%;width:2px;margin-left:-1px;background:#c21a08;box-shadow:0 0 3px rgba(194,26,8,.7);
+  transition:left .7s cubic-bezier(.35,1.45,.5,1)}
+.sound[data-mode="music"] .needle{left:50%}
+.sound[data-mode="talk"] .needle{left:83.33%}
+.sound:not([data-mode="off"]) .glass{filter:none;box-shadow:inset 0 2px 4px rgba(60,20,5,.45),inset 0 0 0 1px rgba(60,20,5,.3),0 0 14px rgba(255,170,90,.55)}   /* tubes warm up, the window glows */
+.sound[data-mode="off"] .b-off,.sound[data-mode="music"] .b-music,.sound[data-mode="talk"] .b-talk{color:#9c1406;font-weight:700}
+/* the knob: brown Bakelite with a ridged rim and a cream pointer */
+.sound .knob{width:36px;height:36px;background:radial-gradient(circle at 36% 30%,#a0603e 0 8%,#5c2c17 30%,#341407 70%,#1e0903);
+  box-shadow:0 3px 5px rgba(0,0,0,.8),inset 0 0 0 1px rgba(0,0,0,.6),inset 0 1px 1px rgba(255,210,170,.3)}
+.sound .knob::after{background:#f3dcae;top:4px;height:10px;width:3px;border-radius:2px;box-shadow:0 0 2px rgba(0,0,0,.6)}
+.sound:hover .glass{filter:brightness(.62) saturate(.8)}
+.sound:not([data-mode="off"]):hover .glass{filter:brightness(1.05)}
+.sound:focus-visible{outline:2px dashed var(--paper);outline-offset:4px;border-radius:6px}
+@media (max-width:560px){.sound .dial{width:92px;height:36px}.sound .scale{font-size:6px;padding:0 4px 1px}.sound .bands{font-size:8px}.sound .knob{display:none}}
+@media (max-width:380px){.sound .dial{width:80px}.sound .scale i:nth-child(2n){visibility:hidden}}
+
+/* first paint: the darkroom shows, the page fades in once its type has loaded (see the arrival note in site.js) */
+html.fl :is(.masthead,main,footer){opacity:0}
+html.fl .mainnav .index{transition:none}
+html.fl-in :is(.masthead,main,footer){animation:fl-in .4s ease-out both}
+@keyframes fl-in{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){html.fl-in :is(.masthead,main,footer){animation:none}}
+
+/* ---------- the room itself: film grain over everything, and the first time you walk in, the safelight buzzing on ---------- */
+html::after{content:"";position:fixed;inset:-60px;z-index:90;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain .9s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}17%{transform:translate(-22px,14px)}33%{transform:translate(18px,-26px)}50%{transform:translate(-30px,-8px)}67%{transform:translate(26px,22px)}83%{transform:translate(-8px,30px)}100%{transform:translate(0,0)}}
+@media (max-width:820px){html::after{opacity:.05;animation:none}}   /* phones keep the grain still, to spare the battery */
+@media (prefers-reduced-motion:reduce){html::after{animation:none}}
+
+/* first visit only: the room is dark, the safelight stutters on, and the hero comes up like a print in the tray */
+html.first body::before{content:"Safelight on";position:fixed;inset:0;z-index:96;pointer-events:none;display:grid;place-items:center;
+  font:400 13px/1 var(--f-type);letter-spacing:.42em;text-transform:uppercase;color:rgba(232,48,26,.0);
+  background:radial-gradient(40vmax 30vmax at 50% 0%,rgba(232,48,26,.0),transparent 70%),#030000;animation:lightson 1.9s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes lightson{
+  0%{opacity:1;color:rgba(232,48,26,0)}
+  20%{opacity:1;color:rgba(232,48,26,.75)}
+  30%{opacity:.62;color:rgba(232,48,26,.75)}
+  34%{opacity:1}
+  40%{opacity:.5}
+  44%{opacity:.85}
+  52%{opacity:.35;color:rgba(232,48,26,.5)}
+  100%{opacity:0;color:rgba(232,48,26,0);visibility:hidden}}
+html.first .box,html.first .devtray{animation:develop-in 2.6s .9s cubic-bezier(.3,0,.2,1) both}
+@keyframes develop-in{from{filter:brightness(1.9) contrast(.25) saturate(.3);opacity:.2}55%{opacity:1}to{filter:none;opacity:1}}
+
+/* readability: body copy is lit like paper under the safelight (about 7:1 on the dark wall), not saturated red-on-black */
+/* ---------- the room responds to you ---------- */
+/* desktop: you carry a safelight. The room behind the page is darker, and lit where your hand is; the page itself always stays fully lit */
+.handlight{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity 1.2s ease;
+  background:radial-gradient(circle 300px at var(--hx,50%) var(--hy,30%),rgba(255,70,40,.13),rgba(255,40,20,.04) 45%,transparent 70%),
+             radial-gradient(circle 680px at var(--hx,50%) var(--hy,30%),transparent 0,rgba(0,0,0,.42) 100%)}
+.handlight.on{opacity:1}
+/* the exposure counter: a little window, like the one on top of a camera, that winds on as you go down the page */
+.excount{position:fixed;left:18px;bottom:18px;z-index:60;display:flex;align-items:center;gap:9px;padding:6px 10px 6px 6px;border-radius:22px;pointer-events:none;
+  background:linear-gradient(#2a0e07,#140503);box-shadow:inset 0 1px 0 rgba(255,214,170,.18),0 0 0 1px #0d0302,0 6px 14px rgba(0,0,0,.6);opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
+.excount.on{opacity:1;transform:none}
+.excount .win{position:relative;width:30px;height:30px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 40% 35%,#f3dcae,#c99a62);box-shadow:inset 0 2px 4px rgba(60,20,5,.6),0 0 0 2px #3a1608}
+.excount .roll{position:absolute;left:0;right:0;top:0;transition:transform .45s cubic-bezier(.3,1.3,.5,1)}
+.excount .roll span{display:block;height:30px;font:400 15px/30px var(--f-type);text-align:center;color:#3a1206}
+.excount .win::after{content:"";position:absolute;left:50%;top:1px;width:0;height:0;margin-left:-3px;border:3px solid transparent;border-top:4px solid #c21a08}
+.excount b{font:800 9px/1.25 var(--f-box);letter-spacing:.2em;text-transform:uppercase;color:#d9a98d}
+.excount b small{display:block;font:400 11px/1.2 var(--f-type);letter-spacing:.02em;text-transform:none;color:#c58c70}
+@media (max-width:1100px),(hover:none){.excount,.handlight{display:none}}
+@media (prefers-reduced-motion:reduce){.handlight{display:none}.excount .roll{transition:none}}
+/* footer: the line about the garage stays tidy */
+.wholine b{white-space:nowrap}
+
+/* the bulb dotting the i: an old radio bulb that comes on when it feels like it */
+.ibulb{transition:opacity .07s linear}
+.ibulb:not(.lit){opacity:.68}   /* resting: a softer glow, never dead */
+/* the shutter's clunk: the camera body jolts a hair as the blades hit their stops */
+main.clunk{animation:clunk .18s cubic-bezier(.3,0,.3,1)}
+@keyframes clunk{0%{transform:translate(0,0)}25%{transform:translate(.6px,2px)}55%{transform:translate(-.4px,-1px)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){main.clunk{animation:none}}
+
+/* ---------- touch screens of every size (phones upright or sideways, tablets): thumb-sized targets and no zoom on focus ---------- */
+@media (pointer:coarse){
+  .env input[type=text],.env input[type=email],.env textarea{font-size:16px}
+  .env input[type=text],.env input[type=email]{min-height:44px}
+  .env .opts label{min-height:44px;padding-right:4px}
+  .env input[type=radio]{width:20px;height:20px}
+  .ticket{min-height:44px;align-content:center}
+  .traycap button,.promises a,.print .ask{display:inline-flex;align-items:center;min-height:44px}
+  /* links inside a sentence: a taller tap area from padding, so the sentence keeps flowing on one line */
+  .line-sec .head a.shoplink,.seeall span a,.lamp-missing a,.lamp-specs a,.empty a,.faq details p a,.hint a{display:inline;padding-block:12px;min-height:0}
+  .path .pk,.fcount,.totop{font-size:11px}
+}
+/* phones in landscape: the notch and rounded corners never cover the edges */
+@supports (padding:max(0px)){
+  .wrap{padding-left:max(clamp(16px,4vw,44px),env(safe-area-inset-left));padding-right:max(clamp(16px,4vw,44px),env(safe-area-inset-right))}
+  footer{padding-bottom:max(22px,env(safe-area-inset-bottom))}
+}
+/* phones turned sideways: a short, wide screen keeps the box and the tray side by side so the headline is on the first screen */
+@media (orientation:landscape) and (max-height:540px) and (min-width:600px){
+  .bench{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;padding-top:22px}
+  .box .band{padding:12px 16px 10px}.bwm{max-width:260px}
+  .box h1{margin:14px 16px 12px}.box h1 .h1-main{font-size:2.6rem}.box h1 .h1-sub{font-size:.95rem;margin-top:10px}
+  .box dl{display:none}.box .warn{margin:0 16px}
+  .traywrap .paths{order:0;margin:var(--stack) 0 0}
+}
+
+.env .nw,.env .sep{font-style:normal;white-space:nowrap}
+@media (max-width:560px){.env .sep{display:none}.env .nw{display:block}}
+
+/* ---------- 404: the frame that didn't come out ---------- */
+.lost{min-height:calc(100svh - 260px);display:grid;align-items:center}
+.lost-grid{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:clamp(28px,6vw,80px);align-items:center}
+.lost .head p{max-width:46ch}
+.lost .cta-pair{margin-top:22px}
+.lost-print{position:relative;aspect-ratio:4/5;padding:14px 14px 46px;background:#efdcc6;rotate:-4deg;box-shadow:0 18px 40px rgba(0,0,0,.6);border-radius:2px}
+.lost-print .lp-face{display:block;height:100%;background:radial-gradient(ellipse at 40% 35%,#fffaf2 0,#f7e6d2 45%,#e8c7ad 100%);box-shadow:inset 0 0 30px rgba(160,80,50,.25)}
+.lost-print .lp-clip{position:absolute;left:50%;top:-14px;width:16px;height:30px;margin-left:-8px;background:linear-gradient(#6b4a2a,#3d2814);border-radius:2px}
+.lost-print .lp-cap{position:absolute;left:0;right:0;bottom:12px;text-align:center;font:400 15px/1 var(--f-script,Yellowtail,cursive);color:#7a3a24}
+@media (max-width:700px){.lost-grid{grid-template-columns:minmax(0,1fr)}.lost-print{width:min(220px,60vw);margin:10px auto 0}}
+
+/* ---------- small motions with a reason ---------- */
+/* hanging signs: they swing on their strings when they come into view, and when a mouse brushes them */
+.dept.swing{animation:signswing 1.9s cubic-bezier(.25,.6,.3,1)}
+@keyframes signswing{0%{transform:rotate(-1.2deg)}12%{transform:rotate(-7deg)}30%{transform:rotate(4.2deg)}48%{transform:rotate(-3.6deg)}66%{transform:rotate(.6deg)}82%{transform:rotate(-1.9deg)}100%{transform:rotate(-1.2deg)}}
+/* FAQ drawers slide rather than snap */
+.faq details{box-sizing:border-box}
+/* the lamp's status stamp thunks down onto the page */
+.lamp-status.thunk{animation:thunk .42s .55s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes thunk{from{transform:rotate(-12deg) scale(1.9);opacity:0}60%{opacity:1}to{transform:rotate(-4deg) scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.dept.swing,.lamp-status.thunk{animation:none}}
+
+/* touch screens: no grey flash on tap, no double-tap zoom on buttons and links; lifts only for a real mouse (above) */
+html{-webkit-tap-highlight-color:transparent}
+a,button,summary,label,input,select,textarea,.flip{touch-action:manipulation}
+@media (hover:none){a:active,button:active,summary:active,.flip:active{opacity:.78}}
+.env .send .fine{flex-basis:100%;margin:2px 0 0;font:400 13px/1.5 var(--f-type);color:#5a1a0c;max-width:52ch}
+.ticket.pending{cursor:default;opacity:1;filter:none;background:transparent;color:var(--paper);box-shadow:inset 0 0 0 1.5px rgba(226,160,138,.5)}
+.ticket.pending small{color:#c9a35a}
+@media (hover:hover){.ticket.pending:hover{transform:none}}
+@supports not (overflow:clip){body{overflow-x:hidden}}
+
+/* ---------- light you can touch ---------- */
+/* the brass pull chain under the hanging safelight */
+.lamp{z-index:3}
+.pullchain{position:absolute;top:56px;left:50%;margin-left:22px;width:44px;height:70px;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;transform-origin:50% 0;animation:chainsway 6s ease-in-out infinite}
+.pullchain .links{position:absolute;left:50%;top:0;width:2px;height:50px;margin-left:-1px;background:repeating-linear-gradient(#e2c27a 0 3px,#6b5221 3px 4px);box-shadow:0 0 4px rgba(255,90,50,.25)}
+.pullchain .bead{position:absolute;left:50%;top:48px;width:11px;height:14px;margin-left:-5.5px;border-radius:50% 50% 45% 45%;background:radial-gradient(circle at 35% 30%,#fff0c2,#c99a45 55%,#5e4416);box-shadow:0 2px 4px rgba(0,0,0,.6)}
+.pullchain:focus-visible{outline:2px dashed var(--paper);outline-offset:3px}
+@media (hover:hover){.pullchain:hover{animation-play-state:paused;rotate:5deg}}
+.pullchain.tug{animation:tug .42s cubic-bezier(.3,1.6,.5,1)}
+@keyframes chainsway{0%,100%{rotate:-2deg}50%{rotate:2.5deg}}
+@keyframes tug{0%{translate:0 0}30%{translate:0 12px}100%{translate:0 0}}
+/* lamp light: the glass glows tungsten amber and the tray picture warms up */
+.lamp .glass,.lamp .cone{transition:background .25s,box-shadow .25s}
+.lamp.warm .glass{background:#ffd08a;animation:none;box-shadow:0 0 16px 4px rgba(255,200,120,.95),0 10px 90px 30px rgba(255,170,90,.42)}
+.lamp.warm .cone{background:radial-gradient(ellipse 50% 100% at 50% 0,rgba(255,200,130,.26),rgba(255,170,100,.09) 45%,transparent 75%)}
+.devtray canvas{transition:filter .5s ease}
+.traywrap.warm .devtray canvas{filter:sepia(.42) saturate(1.35) hue-rotate(10deg) brightness(1.05) contrast(1.08)}
+.devtray::after{content:"";position:absolute;inset:20px;pointer-events:none;border-radius:1px;opacity:0;transition:opacity .5s;mix-blend-mode:screen;
+  background:radial-gradient(ellipse 60% 55% at 50% 0,rgba(255,206,140,.2),rgba(255,170,100,.06) 55%,transparent 85%)}
+.traywrap.warm .devtray::after{opacity:1}
+/* phones and tablets: the lamp hangs, smaller, right above the tray */
+@media (max-width:960px){
+  .traywrap .lamp{display:flex;position:relative;top:auto;left:auto;transform:none;align-self:center;margin:-6px 0 -2px;order:0}
+  .traywrap .lamp .hood{width:80px;height:30px}.traywrap .lamp .glass{width:62px;height:8px}
+  .traywrap .lamp .cone{top:34px;width:360px;height:340px;margin-left:-180px}
+  .traywrap .pullchain{top:36px;margin-left:16px;height:46px}.traywrap .pullchain .links{height:26px}.traywrap .pullchain .bead{top:24px}
+  .traywrap .lamp{margin-bottom:10px}
+}
+/* every lamp on the line switches on when you look at it (hover, keyboard focus, or the middle of a phone screen) */
+.print .bulbglow{position:absolute;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen;transition:opacity .4s ease;
+  background:radial-gradient(circle at var(--gx,50%) var(--gy,30%),rgba(255,236,190,.95) 0,rgba(255,200,130,.5) 11%,rgba(255,165,105,.18) 30%,transparent 56%)}
+.print .face.front canvas,.print .face.front img{transition:filter .4s}
+@media (hover:hover){.print:hover .face.front canvas,.print:hover .face.front img{filter:brightness(1.1) saturate(1.1)}}
+.print.lit .face.front canvas,.print.lit .face.front img{filter:brightness(1.1) saturate(1.1)}
+@media (hover:hover){.print:hover .bulbglow{opacity:1;animation:filament .5s ease-out}}
+.print .flip:focus-visible .bulbglow,.print.lit .bulbglow{opacity:1;animation:filament .5s ease-out}
+.print.latent .bulbglow,.print.flipped .bulbglow{opacity:0!important;animation:none}
+@keyframes filament{0%{opacity:0}18%{opacity:.75}30%{opacity:.25}48%{opacity:.9}62%{opacity:.6}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.pullchain{animation:none}.pullchain.tug{animation:none}.print .bulbglow{animation:none!important}}
+.print .face.front{position:relative}
+.lamp .hood{box-shadow:inset 0 1px 0 rgba(255,200,170,.16),inset 0 -6px 10px rgba(0,0,0,.4)}
+
+/* ---------- the menu: a latching bakelite push-key with a pilot jewel, and a radio dial face that warms up when it opens ---------- */
+.menu-btn{gap:8px;height:44px;min-height:44px;padding:4px 4px 4px 10px;border:0;border-radius:9px 9px 7px 7px;color:inherit;
+  background:linear-gradient(#5a2a16,#2a0f07 55%,#1a0804);
+  box-shadow:inset 0 1px 0 rgba(255,214,170,.28),inset 0 -1px 0 rgba(0,0,0,.6),0 0 0 1px #0d0302,0 3px 6px rgba(0,0,0,.7)}
+.menu-btn:hover{border-color:transparent}
+.menu-btn:focus-visible{outline:2px dashed var(--paper);outline-offset:3px}
+/* the pilot light: dark ruby glass in a brass ring, lit while the menu is open */
+.mb-ap{width:13px;height:13px;border:0;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%,#ffb3a1 0 10%,#a3190a 42%,#3a0603 100%);
+  box-shadow:0 0 0 2px #c9a35a,0 0 0 3px #3d1a08,inset 0 -2px 3px rgba(0,0,0,.55);filter:brightness(.5) saturate(.8);transition:filter .2s,box-shadow .25s}
+.mb-ap::after{display:none}
+.masthead.open .mb-ap{filter:none;box-shadow:0 0 0 2px #e2c27a,0 0 0 3px #3d1a08,inset 0 -2px 3px rgba(0,0,0,.35),0 0 12px 3px rgba(255,60,30,.8)}
+/* the key itself: cream bakelite, engraved, and it stays pressed in (latched) while the menu is open */
+.mb-t{display:grid;place-items:center;height:34px;min-width:62px;padding:0 10px;border-radius:5px 5px 4px 4px;
+  background:linear-gradient(#f1dfb6,#dfc08a 55%,#c9a165);color:#3a1406;font:800 10.5px/1 var(--f-box);letter-spacing:.2em;
+  text-shadow:0 1px 0 rgba(255,246,222,.75);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75),inset 0 -2px 0 rgba(120,70,25,.4),0 2px 0 #6b3b17,0 3px 5px rgba(0,0,0,.6);
+  transform:translateY(-1px);transition:transform .07s ease-out,box-shadow .07s ease-out,background .2s}
+.menu-btn:active .mb-t,.masthead.open .mb-t{transform:translateY(1px);background:linear-gradient(#ead4a8,#d6b47e 60%,#c39c62);
+  box-shadow:inset 0 2px 3px rgba(80,40,10,.45),inset 0 -1px 0 rgba(120,70,25,.3),0 0 0 #6b3b17,0 1px 1px rgba(0,0,0,.5)}
+@media (max-width:380px){.menu-btn{padding:4px 4px 4px 9px;gap:7px}.mb-t{min-width:56px;padding:0 8px;letter-spacing:.16em}}
+
+@media (max-width:860px){
+  /* the walnut cabinet the dial sits in */
+  .mainnav{padding:10px clamp(12px,4vw,40px) 16px;border-bottom:0;
+    background:linear-gradient(#3a170b,#1d0904 70%,#140603);box-shadow:inset 0 1px 0 rgba(255,214,170,.12),0 1px 0 #0d0302,0 22px 34px rgba(0,0,0,.7)}
+  /* the dial face: aged cream glass, with a shine, warming up like a valve set when it opens */
+  .marks{position:relative;padding:2px 18px 2px 30px;border-radius:7px;overflow:hidden;
+    background:linear-gradient(180deg,#f5e2b8,#e4c48e 60%,#d0a66b);
+    box-shadow:inset 0 2px 7px rgba(60,20,5,.55),inset 0 0 0 1px rgba(60,20,5,.45),0 0 0 3px #2a0f07,0 0 0 4px rgba(255,214,170,.12)}
+  .marks::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(165deg,rgba(255,255,255,.2),transparent 34%)}
+  .masthead.open .marks{animation:dialwarm .7s ease-out both}
+  .masthead.open .mainnav{animation:dialdrop .34s cubic-bezier(.2,.9,.3,1.15) both}
+  /* each station on the dial, with the tick scale between them */
+  .marks li{position:relative}
+  .marks li+li{border-top:0}
+  .marks li+li::before{content:"";position:absolute;left:-12px;right:0;top:0;height:6px;
+    background:repeating-linear-gradient(90deg,rgba(74,26,8,.5) 0 1px,transparent 1px 8px);-webkit-mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+  .marks a{min-height:58px;padding:2px 2px 0;color:#3a1406;font:400 31px/1 var(--f-poster);letter-spacing:.035em;text-shadow:0 1px 0 rgba(255,246,222,.55)}
+  .marks a small{font:800 11px/1 var(--f-box);letter-spacing:.1em;color:#a3210c;text-shadow:none}
+  .marks a:hover,.marks a.on{color:#1f0702}
+  .marks a.on small{color:#c21a08}
+  .marks a:active{background:rgba(74,26,8,.07)}
+  .marks a:focus-visible{outline:2px dashed #6b2410;outline-offset:-2px}
+  /* the red needle marks the station you're tuned to */
+  .marks a.on::before{left:-24px;width:30px;height:2px;margin-top:-1px;border:0;background:#c21a08;box-shadow:0 0 5px rgba(194,26,8,.7)}
+  .marks a.on::after{content:"";position:absolute;left:-27px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#7a1206;box-shadow:0 0 0 1.5px #c9a35a}
+  .masthead.open .marks li{animation:station .4s ease-out both}
+  .masthead.open .marks li:nth-child(2){animation-delay:.05s}.masthead.open .marks li:nth-child(3){animation-delay:.1s}.masthead.open .marks li:nth-child(4){animation-delay:.15s}
+}
+@keyframes dialdrop{from{transform:translateY(-10px);opacity:0}to{transform:none;opacity:1}}
+@keyframes dialwarm{from{filter:brightness(.55) saturate(.7)}to{filter:none}}
+@keyframes station{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.masthead.open .marks,.masthead.open .mainnav,.masthead.open .marks li{animation:none}}
+@media (max-width:350px){.masthead .wm{width:116px;height:36px}.sound .dial{width:70px}.sound .bands{font-size:7px}.sound .scale{font-size:5.5px}.menu-btn{padding:4px 4px 4px 7px;gap:6px}.mb-t{min-width:48px;padding:0 6px;letter-spacing:.1em;font-size:10px}}
+/* phones: the radio lives in the menu, under the dial face, at full size */
+.nav-radio{display:none}
+@media (max-width:860px){
+  .nav-radio{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 2px 0;padding:0 2px}
+  .nr-k{font:800 10px/1.3 var(--f-box);letter-spacing:.22em;text-transform:uppercase;color:#c9a35a}
+  .nav-radio .sound .dial{width:150px;height:40px}
+  .nav-radio .sound .scale{font-size:7px;padding:0 6px 1px}.nav-radio .sound .bands{font-size:9px}
+  .nav-radio .sound .scale i:nth-child(2n){visibility:visible}
+  .nav-radio .sound .knob{display:block;width:34px;height:34px}
+  .masthead .wm{width:186px;height:58px}
+}
+@media (max-width:380px){.masthead .wm{width:168px;height:52px}.nav-radio .sound .dial{width:132px}}
+/* menu, on brand: the dial face is the ink-dark of the hero box's band, lettered in safelight paper, lit from above by the red lamp */
+.mb-t{background:linear-gradient(#ecb39d,#e2a08a 55%,#c98a72);color:var(--ink);text-shadow:0 1px 0 rgba(255,225,210,.55);
+  box-shadow:inset 0 1px 0 rgba(255,235,225,.6),inset 0 -2px 0 rgba(120,40,20,.35),0 2px 0 #7a2c16,0 3px 5px rgba(0,0,0,.6)}
+.menu-btn:active .mb-t,.masthead.open .mb-t{background:linear-gradient(#d99a83,#cf8f77 60%,#b97461);box-shadow:inset 0 2px 3px rgba(60,10,4,.45),inset 0 -1px 0 rgba(120,40,20,.25),0 0 0 #7a2c16,0 1px 1px rgba(0,0,0,.5)}
+@media (max-width:860px){
+  .mainnav{background:linear-gradient(#1a0503,#0d0201 80%);box-shadow:0 1px 0 rgba(226,160,138,.14),0 22px 34px rgba(0,0,0,.7)}
+  .marks{background:radial-gradient(ellipse 80% 70% at 50% 0,rgba(232,48,26,.16),transparent 70%),var(--ink);
+    box-shadow:inset 0 0 0 1.5px rgba(226,160,138,.4),inset 0 0 0 5px var(--ink),inset 0 0 0 6px rgba(226,160,138,.14),0 6px 18px rgba(0,0,0,.5)}
+  .marks::after{display:none}
+  .marks li+li::before{background:repeating-linear-gradient(90deg,rgba(226,160,138,.32) 0 1px,transparent 1px 8px)}
+  .marks a{color:var(--paper);text-shadow:2px 1px 0 rgba(232,48,26,.28)}
+  .marks a:hover,.marks a.on{color:#ffd9cb}
+  .marks a small{color:var(--gold)}
+  .marks a.on small{color:#ff6a48}
+  .marks a:active{background:rgba(226,160,138,.07)}
+  .marks a:focus-visible{outline-color:var(--paper)}
+  .marks a.on::after{background:#3a0b05;box-shadow:0 0 0 1.5px #c9a35a}
+  .nr-k{color:var(--gold)}
+}
+
+/* ---------- reading type: long text is set in Franklin Gothic (the American grotesque of 1950s signage, newspapers and catalogs),
+   which reads far faster than a typewriter face; the typewriter stays where it means something: captions, labels, the envelope, notes ---------- */
+:root{--f-read:"Libre Franklin","Franklin Gothic Book","Helvetica Neue",Arial,sans-serif}
+body{font-family:var(--f-read);font-size:17px;line-height:1.62;letter-spacing:0}
+p,li,dd,summary,label{font-kerning:normal}
+/* keep the typewriter for the period details */
+.print figcaption small,.hint,.traycap,.traycap button,.lamp-specs dd,.env,.sent p,.fine,footer .fsmall,.totop,.dhead span,.drop span,.rq-note{font-family:var(--f-body)}
+.env .hd b{font-family:var(--f-box)}
+@media (max-width:560px){body{font-size:16.5px;line-height:1.6}}
+/* the sans reads lighter than the typewriter did, so the paper tone is lifted a step (about 8.5:1 on the wall) and lines are kept to a comfortable measure */
+:root{--text:#e2a690}
+.lede,.line-sec .head p,.faq details p,.ab-intro p,.lamp-details{max-width:62ch}
+/* phone polish: the tray caption fits on one line, and "Back to top" is a readable size */
+@media (max-width:560px){.traycap{gap:4px 16px;margin-top:14px}.traycap .hand{font-size:14px;line-height:1.35}}
+.totop{font-size:11.5px;color:#c9a35a}
+/* the menu key: glossy safelight-red bakelite with cream lettering */
+.mb-t{background:linear-gradient(#e8402a,#c21a08 55%,#9a1206);color:#fff1e2;text-shadow:0 1px 0 rgba(60,4,0,.55);
+  box-shadow:inset 0 1px 0 rgba(255,190,170,.55),inset 0 -2px 0 rgba(60,4,0,.35),0 2px 0 #5a0b03,0 3px 5px rgba(0,0,0,.6)}
+.menu-btn:active .mb-t,.masthead.open .mb-t{background:linear-gradient(#b8180a,#9a1206 60%,#7a0e04);color:#ffe3d2;
+  box-shadow:inset 0 2px 3px rgba(40,2,0,.55),inset 0 -1px 0 rgba(60,4,0,.25),0 0 0 #5a0b03,0 1px 1px rgba(0,0,0,.5)}
+/* the key carries no words: three chrome grille bars, like the speaker slots on a 1950s radio, that fold into an X when it's latched open */
+.mb-t{position:relative;width:46px;min-width:46px;padding:0;font-size:0}
+.mb-t::before,.mb-t::after,.mb-t i{content:""}
+.mb-t::before,.mb-t::after{position:absolute;left:13px;right:13px;top:50%;height:2.5px;margin-top:-1.25px;border-radius:2px;background:#fff1e2;
+  box-shadow:0 1px 0 rgba(60,4,0,.5);transition:transform .22s cubic-bezier(.3,1.3,.5,1),box-shadow .15s}
+.mb-t::before{transform:translateY(-6px);box-shadow:0 6px 0 #fff1e2,0 7px 0 rgba(60,4,0,.5),0 1px 0 rgba(60,4,0,.5)}
+.mb-t::after{transform:translateY(6px)}
+.masthead.open .mb-t::before{transform:rotate(45deg);box-shadow:0 1px 0 rgba(60,4,0,.4)}
+.masthead.open .mb-t::after{transform:rotate(-45deg)}
+@media (max-width:380px){.mb-t{min-width:44px;width:44px}}
+@media (prefers-reduced-motion:reduce){.mb-t::before,.mb-t::after{transition:none}}
+/* the key: black bakelite with brass grille bars */
+.mb-t{background:linear-gradient(#3a2418,#1c0f09 60%,#120805);
+  box-shadow:inset 0 1px 0 rgba(255,214,170,.22),inset 0 -2px 0 rgba(0,0,0,.5),0 0 0 1px rgba(201,163,90,.35),0 2px 0 #080302,0 3px 5px rgba(0,0,0,.6)}
+.mb-t::before,.mb-t::after{background:#e2c27a}
+.mb-t::before{box-shadow:0 6px 0 #e2c27a,0 7px 0 rgba(0,0,0,.5),0 1px 0 rgba(0,0,0,.5)}
+.menu-btn:active .mb-t,.masthead.open .mb-t{background:linear-gradient(#24150d,#140905 60%,#0c0503);
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.7),0 0 0 1px rgba(201,163,90,.45),0 0 0 #080302,0 1px 1px rgba(0,0,0,.5)}
+.masthead.open .mb-t::before{box-shadow:0 1px 0 rgba(0,0,0,.5)}
+@media (hover:hover){.menu-btn:hover .mb-t::before,.menu-btn:hover .mb-t::after{background:#f3dcae}.menu-btn:hover .mb-t::before{box-shadow:0 6px 0 #f3dcae,0 7px 0 rgba(0,0,0,.5)}.masthead.open .menu-btn:hover .mb-t::before{box-shadow:none}}
+/* lamp page: back to the line on the left, previous / next lamp on the right */
+.lamp-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.lamp-step{display:flex;gap:8px}
+.lamp-step .ls{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border:1.5px solid rgba(226,160,138,.35);border-radius:2px;
+  font:800 11px/1 var(--f-box);letter-spacing:.16em;text-transform:uppercase;color:var(--paper);text-decoration:none;transition:border-color .15s,color .15s}
+@media (hover:hover){.lamp-step .ls:hover{border-color:var(--paper);color:var(--cream)}}
+@media (pointer:coarse){.lamp-step .ls{min-height:44px}}
+/* prints: lamps you can have right now carry a small red "available" stamp in the corner */
+.print .avail{position:absolute;right:-6px;top:14px;z-index:3;padding:4px 7px 3px;border:2px solid #e8301a;border-radius:2px;background:rgba(20,3,2,.82);
+  color:#ff7a5a;font:900 9.5px/1 var(--f-box);letter-spacing:.16em;text-transform:uppercase;transform:rotate(8deg);pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.print.flipped .avail{opacity:0}
+@media (max-width:560px){.lamp-top{gap:10px 16px}.lamp-step .ls{padding:0 12px}}
+/* the first screen says it plainly: these are camera lamps, and they're for sale */
+.box .forsale{display:inline-block;margin:22px 24px -8px;padding:5px 9px 4px;border:2px solid #7a1206;color:#7a1206;font:900 12px/1 var(--f-box);letter-spacing:.22em;text-transform:uppercase;transform:rotate(-2deg)}
+.box .forsale+h1{margin-top:16px}
+.box .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin:4px 24px 20px}
+.box .hero-cta .btn.solid{background:var(--ink);color:var(--paper);box-shadow:0 3px 0 #000,0 5px 10px rgba(0,0,0,.35)}
+@media (hover:hover){.box .hero-cta .btn.solid:hover{background:var(--safe);color:#fff}}
+.box .hero-cta .btn:not(.solid){background:transparent;color:var(--ink);border:2px solid var(--ink);box-shadow:none}
+/* phones: the header already carries the sign, so the box's band is slimmer and the headline and Shop button land on the first screen */
+@media (max-width:560px){
+  .box .band{padding:10px 16px 8px}.box .kicker{display:none}.box .bwm{max-width:230px;margin:0 auto}.box .sub{margin-top:6px}
+  .box .forsale{margin:16px 16px -6px}.box h1{margin:14px 16px 12px}.box .hero-cta{margin:2px 16px 16px;gap:10px}
+  .box .hero-cta .btn{flex:1 1 auto;justify-content:center}
+}

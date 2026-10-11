@@ -1,0 +1,15 @@
+{
+  "_how": "Copy an entry into lamps.json for each real lamp. no = its stamped number, status = available | spoken for | to order | sold, price in dollars, image = a file you put in photos/, buyUrl = an https checkout link (eBay, Etsy, Stripe). details shows on the lamp page.",
+  "lamps": [
+    {
+      "no": 19,
+      "title": "The Hawkeye",
+      "camera": "Kodak Brownie Hawkeye, 1950s",
+      "status": "available",
+      "price": "185",
+      "image": "photos/the-hawkeye.jpg",
+      "buyUrl": "https://www.ebay.com/itm/0000000000",
+      "details": "Stands 7 inches tall. Takes one small E12 bulb. Original Bakelite body, flash sync post kept."
+    }
+  ]
+}

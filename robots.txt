@@ -1,0 +1,6 @@
+# Luminous Artifacts: vintage camera lamps, St. Louis, MO. Everyone is welcome, search engines and answer engines alike.
+User-agent: *
+Allow: /
+Disallow: /lamp.html
+
+Sitemap: https://luminousartifacts.store/sitemap.xml
