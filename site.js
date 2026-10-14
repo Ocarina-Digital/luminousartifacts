@@ -4,7 +4,9 @@
 (function(){
 'use strict';
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let irisBusy=false;   // while the aperture moves, the background room holds still so every frame goes to the iris
+let irisBusy=false;
+const touchy=matchMedia('(hover:none),(max-width:820px)').matches;let scrolling=false,scrollT=0;
+if(touchy)addEventListener('scroll',()=>{scrolling=true;clearTimeout(scrollT);scrollT=setTimeout(()=>{scrolling=false},140)},{passive:true});   // while the aperture moves, the background room holds still so every frame goes to the iris
 /* ===== YOUR SHOP LINKS: paste the full addresses between the quotes before launch ===== */
 const SHOP_LINKS={
   ebay:'https://www.ebay.com/sch/i.html?_ssn=tirol28',   // every listing from the tirol28 eBay account
@@ -175,10 +177,10 @@ function bus(){const a=ac();if(!a)return null;if(BUS)return BUS;
   const pk=a.createBiquadFilter();pk.type='peaking';pk.frequency.value=1100;pk.gain.value=4;pk.Q.value=.8;
   const out=a.createGain();out.gain.value=.7;
   inp.connect(sh).connect(hp).connect(pk).connect(lp).connect(out).connect(a.destination);BUS=inp;return BUS}
-function noise(dur,freq,q,gain,type,delay){const a=ac();if(!a||!soundOn())return;const n=Math.ceil(a.sampleRate*dur),b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);
+function noise(dur,freq,q,gain,type,delay){if(!soundOn())return;const a=ac();if(!a)return;const n=Math.ceil(a.sampleRate*dur),b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);
   for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);const s=a.createBufferSource();s.buffer=b;const f=a.createBiquadFilter();f.type=type||'bandpass';f.frequency.value=freq;f.Q.value=q;
   const g=a.createGain();g.gain.value=gain;s.connect(f).connect(g).connect(bus());s.start(a.currentTime+(delay||0))}
-function tone(freq,dur,gain,type,delay,dest){const a=ac();if(!a||!soundOn())return;const o=a.createOscillator(),g=a.createGain(),t0=a.currentTime+(delay||0);o.type=type||'sine';o.frequency.value=freq;
+function tone(freq,dur,gain,type,delay,dest){if(!soundOn())return;const a=ac();if(!a)return;const o=a.createOscillator(),g=a.createGain(),t0=a.currentTime+(delay||0);o.type=type||'sine';o.frequency.value=freq;
   g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(gain,t0+.004);g.gain.exponentialRampToValueAtTime(.0001,t0+dur);o.connect(g).connect(dest||bus());o.start(t0);o.stop(t0+dur+.05)}
 // a struck steel bell: inharmonic partials, like the bell inside a wind-up darkroom timer
 function strike(base,gain,delay){[[1,1,1.6],[2.32,.45,.9],[4.25,.25,.5],[6.63,.12,.3]].forEach(([m,g,d])=>tone(base*m,d,gain*g,'sine',delay))}
@@ -193,7 +195,7 @@ const sfx={
   key(){noise(.012,2600+Math.random()*700,3,.7);noise(.06,420,2,.6,'bandpass',.008);tone(140,.05,.18,'triangle',.008)}, // typewriter type-bar
   carriage(){strike(2400,.12);noise(.35,1500,.8,.25,'bandpass',.08)},                                              // margin bell, carriage return
   paper(){noise(.18,3000,.6,.4,'bandpass');noise(.08,6000,.5,.12,'highpass',.05)},
-  slosh(){const a=ac();if(!a||!soundOn())return;const n=a.sampleRate*1.2,b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;
+  slosh(){if(!soundOn())return;const a=ac();if(!a)return;const n=a.sampleRate*1.2,b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;
     const s=a.createBufferSource();s.buffer=b;const f=a.createBiquadFilter();f.type='lowpass';f.Q.value=6;const g=a.createGain();const t0=a.currentTime;
     f.frequency.setValueAtTime(300,t0);f.frequency.linearRampToValueAtTime(900,t0+.5);f.frequency.linearRampToValueAtTime(250,t0+1.2);
     g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.4,t0+.3);g.gain.linearRampToValueAtTime(0,t0+1.2);s.connect(f).connect(g).connect(bus());s.start()}
@@ -209,7 +211,7 @@ function startRoom(){const a=ac();if(!a||room)return;const g=a.createGain();g.ga
   [60,120,180,240].forEach((f,i)=>{const o=a.createOscillator();o.type=i?'sine':'triangle';o.frequency.value=f;const og=a.createGain();og.gain.value=[1,.6,.25,.1][i];o.connect(og).connect(hum);o.start()});
   const s=a.createBufferSource();s.buffer=crackleBuffer(a);s.loop=true;const cg=a.createGain();cg.gain.value=.22;const cf=a.createBiquadFilter();cf.type='highpass';cf.frequency.value=900;s.connect(cf).connect(cg).connect(g);s.start();
   room={g}}
-function stopRoom(){const a=ac();if(!a||!room)return;const r=room;room=null;r.g.gain.linearRampToValueAtTime(0,a.currentTime+.4);setTimeout(()=>r.g.disconnect(),500)}
+function stopRoom(){if(!room)return;const a=ac();if(!a)return;const r=room;room=null;r.g.gain.linearRampToValueAtTime(0,a.currentTime+.4);setTimeout(()=>r.g.disconnect(),500)}
 // Radio: "The Darkroom Hour", a camera talk show on Radio Luminous, 620 on your dial.
 // Pre-recorded segments play in order with a little tuning static and a vibraphone sting between them.
 const SHOW=['01-sign-on','02-brownie','03-twin-lens','04-argus','05-sponsor','06-press','07-sign-off'].map(n=>'audio/'+n+'.mp3');
@@ -250,7 +252,7 @@ function startMusic(){const a=ac();if(!a||music)return;
   music={stop(){alive=false;const t=a.currentTime;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(0,t+.5);
     setTimeout(()=>{try{src&&src.stop()}catch(e){}g.disconnect()},650)}}}
 function stopMusic(){if(music){music.stop();music=null}}
-function tuneStatic(){const a=ac();if(!a||!soundOn())return;const n=Math.ceil(a.sampleRate*.6),b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);
+function tuneStatic(){if(!soundOn())return;const a=ac();if(!a)return;const n=Math.ceil(a.sampleRate*.6),b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);
   for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*.4*Math.sin(Math.PI*i/n);const s=a.createBufferSource();s.buffer=b;const f=a.createBiquadFilter();f.type='bandpass';f.Q.value=4;
   f.frequency.setValueAtTime(500,a.currentTime);f.frequency.exponentialRampToValueAtTime(2400,a.currentTime+.55);s.connect(f).connect(bus());s.start()}
 
@@ -296,7 +298,7 @@ document.addEventListener('click',e=>{if(!woke){woke=true;ac();applyMode()}if(e.
     x.moveTo(cx0-ax-bx,cy0-ay-by);x.lineTo(cx0+ax-bx,cy0+ay-by);x.lineTo(cx0+ax+bx,cy0+ay+by);x.lineTo(cx0-ax+bx,cy0-ay+by);x.closePath()}
   let lastC=-1e9,sy=scrollY,tPrev=performance.now(),lastDraw=0;
   function frame(now){requestAnimationFrame(frame);
-    if(irisBusy){tPrev=now;return}
+    if(irisBusy||scrolling){tPrev=now;return}   // on phones the room holds still while you scroll, so scrolling stays smooth
     if(now-lastDraw<minFrame)return;lastDraw=now;
     const t=now/1000,dt=Math.min(.05,(now-tPrev)/1000);tPrev=now;
     if(Math.abs(scrollY-sy)>H*.5)sy=scrollY;          // a jump (reload, anchor, iris) snaps; ordinary scrolling glides
@@ -568,6 +570,8 @@ const IRIS=(function(){
   document.querySelectorAll('#marks a').forEach(a=>a.addEventListener('click',()=>set(false)));
   matchMedia('(min-width:861px)').addEventListener('change',()=>set(false));
   addEventListener('pageshow',e=>{if(e.persisted)set(false)});   // never come Back to a menu left open
+  // scrolling the page while the menu is open puts the menu away, so it never rides along over the content
+  let oy=0;btn.addEventListener('click',()=>{oy=scrollY});addEventListener('scroll',()=>{if(mh.classList.contains('open')&&Math.abs(scrollY-oy)>40)set(false)},{passive:true});
   // phones: the header keeps just the logo and the menu key; the radio moves into the menu, under the dial face
   const snd=document.getElementById('soundBtn'),nav=document.getElementById('mainnav');
   if(snd&&nav){const home=snd.parentElement,row=document.createElement('div');row.className='nav-radio';
@@ -589,7 +593,8 @@ const IRIS=(function(){
 })();
 
 /* every so often the old safelight stutters */
-(function(){if(reduce)return;function flick(){document.body.classList.add('flick');setTimeout(()=>document.body.classList.remove('flick'),70);
+(function(){return;   /* retired: the room no longer stutters on its own; it only breathes */
+  function flick(){document.body.classList.add('flick');setTimeout(()=>document.body.classList.remove('flick'),70);
     setTimeout(()=>{document.body.classList.add('flick');setTimeout(()=>document.body.classList.remove('flick'),50)},170);
     setTimeout(flick,22000+Math.random()*26000)}
   setTimeout(flick,14000+Math.random()*10000)})();
@@ -605,5 +610,8 @@ document.querySelectorAll('.shoplink').forEach(a=>{const u=SHOP_LINKS[a.dataset.
     else if(a.classList.contains('ticket')){const sm=a.querySelector('small');if(sm)sm.textContent='Coming soon';a.title=''}
     else a.title='Coming soon'}});
 
-window.LA={busy:()=>irisBusy,reduce,rng,renderScene,order:['boxcam','tlr','bellows','rangefinder','movie'],sfx,IRIS};
+window.LA={busy:()=>irisBusy||scrolling,scrolling:()=>scrolling,reduce,rng,renderScene,order:['boxcam','tlr','bellows','rangefinder','movie'],sfx,IRIS};
 })();
+/* the OPEN sign warms up when it first comes into view */
+(function(){const s=document.querySelector('.neon-sign');if(!s||!('IntersectionObserver' in window)||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches))return;
+  s.classList.add('cold');const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){io.disconnect();setTimeout(()=>{s.classList.remove('cold');s.classList.add('warm')},350)}},{threshold:.35});io.observe(s)})();

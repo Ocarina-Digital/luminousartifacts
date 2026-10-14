@@ -40,7 +40,19 @@ const buyUrl=it=>/^https:\/\//i.test(it.buyUrl||'')?it.buyUrl:'';
 
 /* drawing a print: a photo when there is one, otherwise a sample scene painted when it nears the screen */
 const sceneIO='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;sceneIO.unobserve(e.target);paintScene(e.target)}),{rootMargin:'600px 0px'}):null;
-function paintScene(c){const draw=()=>c.getContext('2d').drawImage(renderScene(c.dataset.scene,c.width,c.height,+c.dataset.seed),0,0);window.requestIdleCallback?requestIdleCallback(draw,{timeout:250}):setTimeout(draw,0)}   // a deadline, so a busy page can't starve it
+const onScreen=c=>{const r=c.getBoundingClientRect();return r.bottom>0&&r.top<innerHeight&&r.width>0};
+const paintNow=c=>{if(c.dataset.painted)return;c.dataset.painted='1';c.getContext('2d').drawImage(renderScene(c.dataset.scene,c.width,c.height,+c.dataset.seed),0,0)};
+/* just before the shutter opens, paint whatever prints are already in view, so the room is never revealed half-developed */
+addEventListener('la:ready',()=>document.querySelectorAll('canvas[data-scene]:not([data-painted])').forEach(c=>{if(onScreen(c))paintNow(c)}));
+function paintScene(c){if(c.dataset.painted)return;
+  const draw=()=>{if(c.dataset.painted)return;if(window.LA.scrolling&&window.LA.scrolling()){setTimeout(()=>paintScene(c),180);return}   // never mid-scroll: wait for the finger to stop
+    if(window.LA.busy&&window.LA.busy()&&!onScreen(c)){setTimeout(()=>paintScene(c),200);return}   /* nor while the shutter is moving, unless it is in view */
+    c.dataset.painted='1';c.getContext('2d').drawImage(renderScene(c.dataset.scene,c.width,c.height,+c.dataset.seed),0,0)};
+  window.requestIdleCallback?requestIdleCallback(draw,{timeout:400}):setTimeout(draw,0)}
+// once the page has settled, quietly paint every print still waiting, one at a time, so scrolling later never has to
+addEventListener('load',()=>setTimeout(function more(){const c=document.querySelector('canvas[data-scene]:not([data-painted])');if(!c)return;
+  if(window.LA.busy&&window.LA.busy()){setTimeout(more,300);return}
+  (window.requestIdleCallback||setTimeout)(()=>{paintScene(c);setTimeout(more,120)})},1500));
 function picture(it,w,h,seedBase){const title=it.title||'Untitled lamp',cam=it.camera||'';
   const scene=()=>{const c=document.createElement('canvas');c.width=w;c.height=h;c.dataset.scene=it.scene||order[(+it.no||0)%order.length];c.dataset.seed=seedBase+order.indexOf(c.dataset.scene)*29;
     c.setAttribute('role','img');c.setAttribute('aria-label',title+', a lamp converted from a '+cam.toLowerCase());sceneIO?sceneIO.observe(c):paintScene(c);return c};
@@ -53,7 +65,7 @@ function printEl(it,i){
   const no=noOf(it.no),title=it.title||'Untitled lamp',cam=it.camera||'',st=it.status||'available',open=isOpen(it);
   const f=el('figure','print');
   f.innerHTML=`<span class="pin" aria-hidden="true"></span><button class="flip" type="button"><span class="face front"></span>
-    <span class="face back" aria-hidden="true"><span class="bk-h">Luminous Artifacts<br>Vintage Camera Lamps</span><svg><use href="#seal"/></svg>
+    <span class="face back" aria-hidden="true"><span class="bk-h">Luminous Artifacts<br>Vintage Camera Lighting</span><svg><use href="#seal"/></svg>
     <span><span class="bk-no"></span><br><span class="bk-name"></span><br><span class="bk-st"></span></span></span></button>
     <figcaption><span class="tape"></span><small></small><span class="price" hidden></span><span class="buyrow"><a class="buy btn solid" hidden target="_blank" rel="noopener noreferrer">Buy this lamp</a><a class="ask"></a></span></figcaption>`;
   f.querySelector('.flip').setAttribute('aria-label',title+'. Turn the print over');
@@ -86,10 +98,11 @@ function renderLine(box,items,perLine=5){
     line.innerHTML='<svg class="wire" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 6 Q500 46 1000 6" fill="none" stroke="#3d130b" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>';
     const row=el('div','prints');items.slice(r,r+perLine).forEach((it,k)=>row.appendChild(printEl(it,r+k)));line.appendChild(row);box.appendChild(line)}
   if(!reduce&&'IntersectionObserver' in window){
-    const io=new IntersectionObserver(es=>{let k=0;es.forEach(e=>{if(e.isIntersecting){const f=e.target;io.unobserve(f);setTimeout(()=>f.classList.remove('latent'),60+(k++)*110)}})},{threshold:.12});
+    const io=new IntersectionObserver(es=>{let k=0;es.forEach(e=>{if(e.isIntersecting){const f=e.target;io.unobserve(f);setTimeout(()=>{f.classList.remove('latent');f.classList.add('hang');f.addEventListener('animationend',e=>{if(e.animationName==='hang')f.classList.remove('hang')})},60+(k++)*110)}})},{threshold:.12});
     box.querySelectorAll('.print').forEach(f=>{f.classList.add('latent');io.observe(f)})}
   watchLit(box);
-  if(!reduce&&!swaying.has(box)){swaying.add(box);let last=scrollY,lt=performance.now(),q=false,settle;
+  if(!reduce&&!swaying.has(box)&&matchMedia('(hover:hover)').matches){/* the wind only blows on desktop; on phones scrolling stays light */
+    swaying.add(box);let last=scrollY,lt=performance.now(),q=false,settle;
     addEventListener('scroll',()=>{if(q)return;q=true;requestAnimationFrame(()=>{q=false;const now=performance.now(),v=(scrollY-last)/Math.max(16,now-lt);last=scrollY;lt=now;
       box.style.setProperty('--wind',Math.max(-5,Math.min(5,v*3.2)).toFixed(2)+'deg');clearTimeout(settle);settle=setTimeout(()=>box.style.setProperty('--wind','0deg'),140)})},{passive:true})}
 }
